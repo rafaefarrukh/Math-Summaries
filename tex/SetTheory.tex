@@ -1,0 +1,344 @@
+\documentclass{article}
+
+% Packages and libraries
+\usepackage{lmodern, shapepar, microtype, lipsum, tikz, tikz-cd, parskip, amssymb, amsmath, physics}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage[paperheight = 40cm, paperwidth = 60cm, margin=0.4cm]{geometry}
+\usetikzlibrary{calc,fit,intersections,mindmap}
+
+% Command to wrap text around shapes
+% (https://tex.stackexchange.com/questions/67032/fitting-text-to-a-shape-in-tikz?noredirect=1&lq=1)
+
+\def\shapeparnodeaccuracy{2}
+\newcommand\shapeparnode[6][]{
+	% 6 parameters:
+	% style for node (default:empty),
+	% h margin, v margin, left path, right path, text (just one paragraph!)
+	
+	% name left and right paths and compute there bounding boxes
+	\begin{scope}[local bounding box=leftbb]
+		\path[name path global=left,xshift=#2] #4;
+	\end{scope}
+	\node[inner ysep=-#3,inner xsep=0pt,fit=(leftbb)](leftbb){};
+	\begin{scope}[local bounding box=rightbb]
+		\path[name path global=right,xshift=-#2] #5;
+	\end{scope}
+	\node[inner ysep=-#3,inner xsep=0pt,fit=(rightbb)](rightbb){};
+	
+	% global bounding box
+	\path let
+	\p1=(leftbb.north west), \p2=(leftbb.south west),
+	\p3=(rightbb.north east), \p4=(rightbb.south east)
+	in
+	\pgfextra{
+		\pgfmathsetmacro{\ymin}{(\y1 < \y3) ? \y1 : \y3}
+		\pgfmathsetmacro{\ymax}{(\y2 > \y4) ? \y2 : \y4}
+		\typeout{ymin \ymin}
+		\typeout{ymax \ymax}
+	} node[inner sep=0,fit={(\x1,\ymin pt)(\x3,\ymax pt)}](mybb){};
+	
+	% compute nb steps
+	\path let \p1=(mybb.north), \p2=(mybb.south) in
+	\pgfextra{
+		\pgfmathsetmacro{\fnthght}{1em/\shapeparnodeaccuracy}
+		\pgfmathtruncatemacro{\nbsteps}{(\y1-\y2)/\fnthght}
+		\xdef\nbsteps{\nbsteps}
+		\typeout{nb steps \nbsteps}
+	};
+	
+	% horizontal references
+	\path (mybb.north) -- (mybb.south)
+	\foreach \cnt in {0,1,...,\nbsteps}{
+		\pgfextra{\pgfmathsetmacro{\pos}{\cnt/\nbsteps}}
+		coordinate[pos=\pos] (ref \cnt)
+	};
+	
+	% left and right boundaries coordinates
+	\foreach \cnt in {0,1,...,\nbsteps}{
+		% an horizontal line from left to right
+		\path[name path=ltor]
+		(mybb.west |- ref \cnt) --  (mybb.east |- ref \cnt);
+		% same line from right to left
+		\path[name path=rtol]
+		(mybb.east |- ref \cnt) -- (mybb.west |- ref \cnt);
+		% left boundary
+		\path[name intersections={of=rtol and left,by={l \cnt},sort by=rtol}];
+		% right boundary
+		\path[name intersections={of=ltor and right,by={r \cnt},sort by=ltor}];
+	}
+	% start point (and initial value of boundshape)
+	\path let \p1=(l 0) in 
+	\pgfextra{
+		\pgfmathsetmacro{\xstart}{\x1}
+		\xdef\boundshape{{0}{0}b{\xstart}}
+		\xdef\xmin{\xstart}
+		\xdef\xmax{\xstart}
+	};
+	
+	% top and bottom
+	\path let \p1=(l 0), \p2=(l \nbsteps) in
+	\pgfextra{
+		\pgfmathsetmacro{\ystart}{\y1}\xdef\ystart{\ystart}
+		\pgfmathsetmacro{\yending}{\y2}\xdef\yending{\yending}
+	};
+	% incremental definition of boundshape
+	\foreach \cnt in {0,1,...,\nbsteps}{
+		\path let \p1=(l \cnt), \p2=(r \cnt) in
+		\pgfextra{
+			\pgfmathsetmacro{\start}{\x1}
+			\pgfmathsetmacro{\len}{\x2-\x1}
+			\pgfmathsetmacro{\ypos}{\cnt/\nbsteps*(\ystart - \yending)}
+			{\let\\=\relax \xdef\boundshape{\boundshape\\{\ypos}t{\start}{\len}}}
+			\pgfmathsetmacro{\xmin}{(\xmin < \start) ? \xmin : \start}
+			\xdef\xmin{\xmin}
+			\pgfmathsetmacro{\xmax}{(\xmax > \start + \len) ? \xmax : \start + \len}
+			\xdef\xmax{\xmax}
+		};
+	}
+	% draw the node with text in a shapepar
+	\pgfmathsetmacro{\ymax}{\ystart - \yending}
+	{\let\\=\relax \xdef\boundshape{\boundshape\\{\ymax}e{0}}}
+	\node[#1,text width=\xmax pt - \xmin pt,align=flush right,
+	anchor=north west,inner sep=0]
+	at (mybb.north west -| \xmin pt,0)
+	{\Shapepar[1pt]{\boundshape}#6\par};
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Text
+
+% Left Text
+\def\leftText{
+	\begin{Large} \textbf{Relations} \end{Large} \\
+	\phantom{} \\
+	$\text{Cartesian Product, } A \cross B = \{(x,y): x \in A \wedge y \in B\}$ \\
+	\phantom{} \\
+	$|A \cross B| = |A| \cross |B|$ \\
+	\phantom{} \\
+	$A \cross B \not= B \cross A \text{ but } A \cross B \approx B \cross A$ \\
+	\phantom{} \\
+	$\text{Relation, }R \subseteq A \cross B$ \\
+	\phantom{} \\
+	$\text{Correspondence: } aRb \iff (a,b) \in R$ \\
+	\phantom{} \\
+	$\text{Composition: if } R:A \rightarrow B \text{ and } S:B \rightarrow C \text{ then } R \circ S: A \rightarrow C$ \\
+	\phantom{} \\
+	\phantom{} \\
+	\begin{Large} \textbf{Types of Relations and their Closures} \end{Large} \\
+	\phantom{} \\
+	$\text{Reflexive: } \forall a \in A, a \in R \Rightarrow \text{closure = } R \cup \Delta_A$ \\
+	\phantom{} \\
+	$\text{Symmetric: if } aRb \text{ then } bRa \Rightarrow \text{closure = } R \cup R^{-1}$ \\
+	\phantom{} \\
+	$\text{Antisymmetric: if } aRb \text{ and } bRc \text{ then } a=c \Rightarrow \text{ no closure}$ \\
+	\phantom{} \\
+	$\text{Transitive: if } aRb \text{ and } bRc \text{ then } aRc \Rightarrow \text{closure = } R \cup R \circ R = R^2 \cup R^3 \cup \dots \cup R^n$ \\
+	\phantom{} \\
+	\phantom{} \\
+	\begin{Large} \textbf{Partitions} \end{Large} \\
+	\phantom{} \\
+	A set can be partitioned into a collection of sets, $\alpha$ s.t. $\alpha \subseteq P(A)$, $\cap \alpha = \phi$ and $|\cup \alpha| = |A|$ \\
+	\phantom{} \\
+	Cross Partition: If $P_1 = \{A_i: i \in I\}$ and $P_2 = \{B_j:j \in J\}$, then $P_1 \cross P_2 = \{A_i \cap B_j\} \backslash \phi$ \\
+	\phantom{} \\
+	System of Representation: $\{x_i: i \in A_i, i \in I\}$ \\
+	\phantom{} \\
+	\phantom{} \\
+	\begin{Large} \textbf{Functions} \end{Large} \\
+	\phantom{} \\
+	$f:A \rightarrow B \text{ is a relation s.t.} \forall x \in A, \exists \text{ a unique image in } B$ \\
+	\phantom{} \\
+	$I(f) = f(A) = \{y:y \in B \wedge y = f(x) \forall x \in A\}$ \\
+	\phantom{} \\
+	$f: A \leftrightarrow B \text{ is a bijection if it is one to one and onto.}$ \\
+	\phantom{} \\
+	If it is not a bijection,its domain can be restricted to make it one to one and its co-domain can be restricted to make it onto. \\
+	\phantom{} \\
+	$\text{If } f: A \leftrightarrow B \text{ then }\exists f^{-1} \text{ s.t. } f^{-1}(f(A)) = A$ \\
+	\phantom{} \\
+	$\text{Identity function, } I(x) = x$ \\
+	\phantom{} \\
+	$\text{Number of functions } = |B|^{|A|}$ \\
+	\phantom{} \\
+	\phantom{} \\
+	\begin{Large} \textbf{Cardinal Numbers} \end{Large} \\
+	\phantom{} \\
+	Equipotent Sets $A \approx B$ if $\exists f: A \leftrightarrow B$ \\
+	\phantom{} \\
+	Countable sets are finite or denumerable (countably infinite).\\
+	\phantom{} \\
+	Cardinality of finite sets is the collection of sets of that magnitude while cardinality of infinite sets are represented by transfinite numbers. \\
+	\phantom{} \\
+	If $\exists f: \mathbb{N} \leftrightarrow A$, then $A$ is denumerable and has cardinality $\aleph_0$ \\
+	\phantom{} \\
+	If $\exists f: [0,1] \leftrightarrow A$, then $A$ is non denumerable and has cardinality $\textbf{c}$ \\
+	\phantom{} \\
+	Continuum Theorem: $\nexists \alpha$ s.t. $\aleph_0 < \alpha < \textbf{c}$ \\
+	\phantom{} \\
+	$\textbf{c} = 2^{\aleph_0}$
+}
+
+% Right Text
+\def\rightText{
+	\begin{Large} \textbf{Equivalence Relation} \end{Large} \\
+	\phantom{} \\
+	If $R$ induced by $A$ is reflexive, symmetric and transitive, it is an equivalence relation. \\ 
+	\phantom{} \\
+	Equivalence Class: $[a] = \{x: (a,x) \in R\}; \hspace{0.5cm} [a] \subseteq A$ \\
+	\phantom{} \\\\
+	Quotient Set, $A \backslash R = \{[a]: a \in A\}$ is always a partition of $A$ \\
+	\phantom{} \\
+	\phantom{} \\
+	\begin{Large} \textbf{Ordered Relation} \end{Large} \\
+	\phantom{} \\
+	Comparable elements: $a \nparallel b \iff a \preceq b$ or $b \preceq a$ \\
+	\phantom{} \\
+	Lexicographic order: if $b \not= b'$ then $(a,b) \prec (a',b')$ if $b \prec b'$ and if $b=b'$ then $(a,b) \prec (a',b')$ if $a \prec a'$ \\ \hspace{0.5cm} \\
+	\phantom{} \\
+	Ordered-Isomorphic Set: $A \simeq T$ if $f:S \leftrightarrow T$ is similarity mapping (if $a \preceq b$ then $f(a) \preceq f(b)$). \\
+	\phantom{} \\
+	Quasi Order set: irreflexive and transitive. \\
+	\phantom{} \\
+	Partial Ordering set: reflexive, antisymmetric and transitive. \\
+	\phantom{} \\
+	Linearly ordered set: set s.t. all elements are comparable \\
+	\phantom{} \\
+	Ordered Set: If $(S, \preceq)$ and $A \subseteq S$, then A is an ordered set of S. Hence relation of A induced by S is $R_A = R \cap (A \cross A)$. \\
+	\phantom{} \\
+	Well ordered set: $S$ is an ordered set s.t. every subset has a first element. Union of such sets is non commutative. The number of elements in such a set is known as its ordinal numbers and their algebra is non commutative. \\
+	\phantom{} \\
+	Well ordering theorem: every set can be well ordered \\ \hspace{0.5cm} \\
+	\phantom{} \\
+	Hasse Diagram of $(P(\{a,b\}), \subseteq)$\\
+	\phantom{} \\ \phantom{} \\\phantom{} \\\phantom{} \\\phantom{} \\\phantom{} \\\phantom{} \\ \phantom{} \\ \phantom{} \\ \phantom{} \\ \phantom{} \\
+	Upper bound: $A \subseteq S$ and $M \in S$, then $M$ is the upper bound if $x \preceq M \forall x \in A$. Supremum is the largest upper bound. Lower bound: $A \subseteq S$ and $m \in S$, then $m$ is the lower bound if $x \succeq m \forall x \in A$. Infimum is the largest lower bound. \\
+	\phantom{} \\
+	Limit element: $a \in S$ if $\nexists x$ s.t. $x \prec a$ and $a$ is not the first element. \\
+	\phantom{} \\
+	Initial segment: $a \in S$, then $S(a) = \{x: x \in S, x \prec a\}$. Hence A is shorter than B if A is similar to an initial segment of B. \\ 
+	\phantom{} \\
+	\phantom{} \\
+	\begin{Large} \textbf{Choice Function and Axiom of Choice} \end{Large} \\
+	\phantom{} \\
+	Choice function: if $\{A_i:i \in I\}$ is a non empty family of non empty subsets of X, then $\exists$ $f: \{A_i: i \in I\} \rightarrow X$ s.t. $f(A_i) = a_i \in A_i$. \\
+	\phantom{} \\
+	Cartesian Product: $\Pi \{A_i: i \in I\}$ is the collection of all choice functions defined on $\{A_i:i \in I\}$. \\
+	\phantom{} \\
+	Axiom of choice: There exists at least 1 choice function for non empty family of non empty sets. \\
+	\phantom{} \\
+	Zomelo's Postulate: Let $\{A_i:i \in I\}$ be a non empty family of disjoint non empty sets then $\exists$ a subset $B$, s.t. $B \cap A_i = \{a_i\} \forall i \in I$. \\
+	\phantom{} \\
+	Zorn's Lemma: Let X be a non empty partial ordered set in which every chain has an upper bound in X, then X contains at least 1 maximal element.
+}
+
+% Center Text
+\def\centerText{
+	\begin{center}
+		
+		\begin{Large} \textbf{Operations} \end{Large}
+		$$A \cup B = \{x:x \in A \lor x \in B\}$$
+		$$A \cap B = \{x:x \in A \wedge x \in B\}$$
+		$$A \backslash B = \{x: x \in A \wedge x \not\in B\}$$
+		$$A\oplus B = \{x:x \in A,B \wedge x \not\in A \cap B\}$$
+		$$A^c = \{x: x \in U \wedge x \not\in A\}$$
+		
+		\hspace{0.5cm} \\
+		
+		\begin{Large} \textbf{Algebra} \end{Large}
+		$$\text{Idempotent: } A \cup A = A; \hspace{0.5cm} A \cap A = A$$
+		$$\text{Commutative: } A \cup B = B \cup A; \hspace{0.5cm} A \cap B = B \cap A$$
+		$$\text{Distributive: } A \cup (B \cap C) = (A \cup B) \cap (A \cup C); \hspace{0.5cm} A \cup (B \cup C) = (A \cap B) \cup (A \cap C)$$
+		$$\text{Identity: } A \cup \phi = A; \hspace{0.5cm} A \cap \phi = \phi; \hspace{0.5cm} A \cup U = U; \hspace{0.5cm} A \cap U = A$$
+		$$\text{Involution: } A^{c^c} = A$$
+		$$\text{Compliment: } A \cup A^c = U; \hspace{0.5cm} A \cap A^c = \phi; \hspace{0.5cm} U^c = \phi; \hspace{0.5cm} \phi^c = U$$
+		$$\text{DeMorgan's Law: } (A \cup B)^c = A^c \cap B^c; \hspace{0.5cm} (A \cap B)^c = A^c \cup B^c$$
+		$$\text{Duality: } \cap \leftrightarrows \cup; \hspace{0.5cm} U \leftrightarrows \phi$$
+		
+		\hspace{0.5cm} \\
+		
+		\begin{Large} \textbf{Types of Relations Between Two Sets} \end{Large}
+		$$\text{Disjoint: } A \cap B = \phi; \hspace{0.5cm} \text{Overlapping: } A \cap B \not= \phi$$
+		$$\text{Subset: } A \subseteq B \text{ if } A \cap B = A \text{ and } A \cup B = B$$
+		$$\text{Equal: } A=B \text{ if } A \subseteq B \text{ and } B \subseteq A \text{ (Schroeder Bernstein inequality)}$$
+		$$\text{Equivalent: } A \approx B \text{ if } |A| = |B|$$
+		
+		\hspace{0.5cm} \\
+		
+		\begin{Large} \textbf{Collection of Sets} \end{Large}
+		$$\alpha = \{A_1, A_2, A_3, ...\}$$
+		$$\cup \alpha = \cup_{A \in \alpha} \alpha = \cup \{A:A \in \alpha\} = \{x:x \in A \text{ for some } A \in \alpha\}$$
+		$$\cap \alpha = \cap_{A \in \alpha} \alpha = \cap \{A:A \in \alpha\} = \{x:x \in A \forall A \in \alpha\}$$
+		Power Set: $P(A)$ is the family of all subsets of A. $|A| = n \Rightarrow|P(A)| = 2^n$
+		
+		\hspace{0.5cm} \\
+		
+		\begin{Large} \textbf{Index Notation} \end{Large}
+		$$f:I \rightarrow \alpha \text{ s.t. } \{A_i\} = \{A_i: i \in I\}$$
+		$$\cup_{i \in I} A_i = \cup \{A_i: i \in I\} = \cup_i A_i$$
+		$$\cap_{i \in I} A_i = \cap \{A_i: i \in I\} = \cap_i A_i$$
+		$$\text{If } J \subseteq I, \text{ then } \cup_{j \in J} \subseteq \cup_{i \in I} \text{ and } \cap_{j \in J} \supseteq \cap_{i \in I}$$
+		$$B \cap (\cup \{Ai\}) = \cup \{B \cap A_i\}$$
+		$$(U\{A_i\})^c = \cap \{A_i^c\}$$
+		$$U_\phi A_i = U$$
+		
+	\end{center}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Document
+
+\begin{document} \begin{center} \begin{tikzpicture}
+
+% Boundary
+\filldraw[color=black, fill=gray!10, very thick] (0,0) rectangle (59,39);
+
+% Circles
+\draw[very thick] (20.25, 19.5) circle (17); \fill[color=Aquamarine, opacity=0.2] (20.25,19.5) circle (17);
+\draw[very thick] (38.75, 19.5) circle (17); \fill[color=SeaGreen, opacity=0.2] (38.75,19.5) circle (17);
+
+% Title
+\node[annotation, font=, text width=8cm] at (5,37) {\begin{Huge} \textbf{U = Set Theory} \end{Huge}};
+
+% Center Area
+\node[annotation, centered, font=, text width = 12cm] at (29.5, 19.5) {\centerText};
+
+% Left Area
+\begin{scope} % first example
+	\def\pathone{(12.1,34.25) arc(120:240:17)}
+	\def\pathtwo{[xshift=17cm]\pathone}
+	\shapeparnode{1em}{.5em}{\pathone}{\pathtwo}{\leftText}
+\end{scope}
+
+% Right Area
+\begin{scope} % first example
+	\def\pathone{(29.1,4.75) arc(-60:60:17)}
+	\def\pathtwo{[xshift=17cm]\pathone}
+	\shapeparnode{1em}{.5em}{\pathone}{\pathtwo}{\rightText}
+\end{scope}
+
+% Hasse Diagram
+\node[annotation, centered, font=, text width = 3cm] at (42, 18) {
+	$$\hspace{1.1cm} \{a,b\} \text{  Maximal element, } a' \in S \text{ s.t.} \nexists x \text{ s.t. } x \succeq a \text{. Last element, } a \succeq x \forall x \in S$$\\
+	$$\{a\} \hspace{1cm} \{b\}$$ \\
+	$$\hspace{1.4cm} \phi \text{  Minimal element, } a \in S \text{ s.t. } \nexists x \text{ s.t. } x \preceq a \text{. First Element, } a \preceq x \forall x \in S$$
+};
+\draw (41.2,18) -- (42,19);
+\draw (42.8,18) -- (42,19);
+\draw (41.2,17.5) -- (42,16.5);
+\draw (42.8,17.5) -- (42,16.5);
+
+% Relations
+\draw (18,31) ellipse (0.5 and 1);
+\draw (20,31) ellipse (0.5 and 1);
+\draw[->] (18.3, 31) -- (19.7, 31);
+\draw[->] (18.3, 32.25) -- (19.7, 32.25);
+\node at (18,31) {a};
+\node at (20,31) {b};
+\node at (18,32.25) {A};
+\node at (20,32.25) {B};
+\node at (19,32.5) {$R$};
+
+\end{tikzpicture} \end{center} \end{document}
