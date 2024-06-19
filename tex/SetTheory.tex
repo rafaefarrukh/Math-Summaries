@@ -306,14 +306,14 @@
 \node[annotation, centered, font=, text width = 12cm] at (29.5, 19.5) {\centerText};
 
 % Left Area
-\begin{scope} % first example
+\begin{scope}
 	\def\pathone{(12.1,34.25) arc(120:240:17)}
 	\def\pathtwo{[xshift=17cm]\pathone}
 	\shapeparnode{1em}{.5em}{\pathone}{\pathtwo}{\leftText}
 \end{scope}
 
 % Right Area
-\begin{scope} % first example
+\begin{scope}
 	\def\pathone{(29.1,4.75) arc(-60:60:17)}
 	\def\pathtwo{[xshift=17cm]\pathone}
 	\shapeparnode{1em}{.5em}{\pathone}{\pathtwo}{\rightText}
