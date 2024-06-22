@@ -10,7 +10,7 @@ This is just a side project I am doing to revise my courses and practice LaTeX.
 
 [MATH 201: Calculus II](pdf/CalculusII.pdf)
 
-[MATH 203: Vector Analysis](pdf/VectorAnalysis.pdf) (Incomplete)
+[MATH 203: Vector Analysis](pdf/VectorAnalysis.pdf)
 
 [MATH 210: Set Theory](pdf/SetTheory.pdf)
 
