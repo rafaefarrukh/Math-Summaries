@@ -1,0 +1,229 @@
+\documentclass{article}
+
+% Packages and libraries
+\usepackage{lmodern, shapepar, microtype, lipsum, tikz, tikz-cd, parskip, amssymb, amsmath, physics, pgfplots, bigints}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage[paperheight = 41cm, paperwidth = 71cm, margin=1cm, heightrounded]{geometry}
+\usetikzlibrary{calc,fit,intersections,mindmap}
+\usepgfplotslibrary{fillbetween}
+\pgfplotsset{compat=1.18, height=40cm, width=70cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\\
+
+% Command to wrap text around shapes
+% (https://tex.stackexchange.com/questions/67032/fitting-text-to-a-shape-in-tikz?noredirect=1&lq=1)
+
+\def\shapeparnodeaccuracy{2}
+\newcommand\shapeparnode[6][]{
+	% 6 parameters:
+	% style for node (default:empty),
+	% h margin, v margin, left path, right path, text (just one paragraph!)
+	
+	% name left and right paths and compute there bounding boxes
+	\begin{scope}[local bounding box=leftbb]
+		\path[name path global=left,xshift=#2] #4;
+	\end{scope}
+	\node[inner ysep=-#3,inner xsep=0pt,fit=(leftbb)](leftbb){};
+	\begin{scope}[local bounding box=rightbb]
+		\path[name path global=right,xshift=-#2] #5;
+	\end{scope}
+	\node[inner ysep=-#3,inner xsep=0pt,fit=(rightbb)](rightbb){};
+	
+	% global bounding box
+	\path let
+	\p1=(leftbb.north west), \p2=(leftbb.south west),
+	\p3=(rightbb.north east), \p4=(rightbb.south east)
+	in
+	\pgfextra{
+		\pgfmathsetmacro{\ymin}{(\y1 < \y3) ? \y1 : \y3}
+		\pgfmathsetmacro{\ymax}{(\y2 > \y4) ? \y2 : \y4}
+		\typeout{ymin \ymin}
+		\typeout{ymax \ymax}
+	} node[inner sep=0,fit={(\x1,\ymin pt)(\x3,\ymax pt)}](mybb){};
+	
+	% compute nb steps
+	\path let \p1=(mybb.north), \p2=(mybb.south) in
+	\pgfextra{
+		\pgfmathsetmacro{\fnthght}{1em/\shapeparnodeaccuracy}
+		\pgfmathtruncatemacro{\nbsteps}{(\y1-\y2)/\fnthght}
+		\xdef\nbsteps{\nbsteps}
+		\typeout{nb steps \nbsteps}
+	};
+	
+	% horizontal references
+	\path (mybb.north) -- (mybb.south)
+	\foreach \cnt in {0,1,...,\nbsteps}{
+		\pgfextra{\pgfmathsetmacro{\pos}{\cnt/\nbsteps}}
+		coordinate[pos=\pos] (ref \cnt)
+	};
+	
+	% left and right boundaries coordinates
+	\foreach \cnt in {0,1,...,\nbsteps}{
+		% an horizontal line from left to right
+		\path[name path=ltor]
+		(mybb.west |- ref \cnt) --  (mybb.east |- ref \cnt);
+		% same line from right to left
+		\path[name path=rtol]
+		(mybb.east |- ref \cnt) -- (mybb.west |- ref \cnt);
+		% left boundary
+		\path[name intersections={of=rtol and left,by={l \cnt},sort by=rtol}];
+		% right boundary
+		\path[name intersections={of=ltor and right,by={r \cnt},sort by=ltor}];
+	}
+	% start point (and initial value of boundshape)
+	\path let \p1=(l 0) in 
+	\pgfextra{
+		\pgfmathsetmacro{\xstart}{\x1}
+		\xdef\boundshape{{0}{0}b{\xstart}}
+		\xdef\xmin{\xstart}
+		\xdef\xmax{\xstart}
+	};
+	
+	% top and bottom
+	\path let \p1=(l 0), \p2=(l \nbsteps) in
+	\pgfextra{
+		\pgfmathsetmacro{\ystart}{\y1}\xdef\ystart{\ystart}
+		\pgfmathsetmacro{\yending}{\y2}\xdef\yending{\yending}
+	};
+	% incremental definition of boundshape
+	\foreach \cnt in {0,1,...,\nbsteps}{
+		\path let \p1=(l \cnt), \p2=(r \cnt) in
+		\pgfextra{
+			\pgfmathsetmacro{\start}{\x1}
+			\pgfmathsetmacro{\len}{\x2-\x1}
+			\pgfmathsetmacro{\ypos}{\cnt/\nbsteps*(\ystart - \yending)}
+			{\let\\=\relax \xdef\boundshape{\boundshape\\{\ypos}t{\start}{\len}}}
+			\pgfmathsetmacro{\xmin}{(\xmin < \start) ? \xmin : \start}
+			\xdef\xmin{\xmin}
+			\pgfmathsetmacro{\xmax}{(\xmax > \start + \len) ? \xmax : \start + \len}
+			\xdef\xmax{\xmax}
+		};
+	}
+	% draw the node with text in a shapepar
+	\pgfmathsetmacro{\ymax}{\ystart - \yending}
+	{\let\\=\relax \xdef\boundshape{\boundshape\\{\ymax}e{0}}}
+	\node[#1,text width=\xmax pt - \xmin pt,align=flush right,
+	anchor=north west,inner sep=0]
+	at (mybb.north west -| \xmin pt,0)
+	{\Shapepar[1pt]{\boundshape}#6\par};
+}
+
+
+% Text
+
+\def\Function{
+	Function, $f$ is a rule that assigns to each element in domain ($x \in D$) exactly one element in the co-domain ($f(x) \in D'$).
+}
+
+\def\Differentiation{
+	\hspace{1cm} \begin{Huge} $\frac{d}{dx} f(x)$ \end{Huge} \\
+	\phantom{} \\ \phantom{} \\ 
+	\textbf{Extreme Value Theorem:} if $f$ is continuous on $[a,b]$, then $\exists c,d \in D$ s.t. $f(c)$ is the global maxima and $f(d)$ is the global minima of $f$. \\
+	\phantom{} \\
+\textbf{	Critical Numbers:} If $f$ is continuous on $[a,b]$ and differentiable on $(a,b)$ then $\exists c \in D$ s.t. $f'(c) = 0$ or D.N.E.. \\
+	\phantom{} \\
+	\textbf{Rolle's Theorem:} If $f$ is continuous on $[a,b]$, differentiable on $(a,b)$ and $f(a) = f(b)$, then $f'(c) = 0$. \\
+	\phantom{} \\
+	\textbf{Mean Value Theorem:} If $f$ is continuous on $[a,b]$ and differentiable on $(a,b)$ then $f'(c) = \frac{f(b) - f(a)}{b-a}$. \\
+	\phantom{} \\
+	\textbf{Closed Interval Method} to determine global absolutes: If $f$ is continuous on $[a,b]$ and differentiable on $(a,b)$ then the global absolutes $\in \{f(a), f(b), f(c)\}$. \\
+	\phantom{} \\
+	\textbf{First Derivative Test:} If $f$ is continuous on $[a,b]$, then if $f'(x)$ changes sign at $x=c$, then their exists a local extreme at that point ($+ \rightarrow - \Rightarrow$ maxima and $- \rightarrow + \Rightarrow$ minima). If the sign does not change then $f$ does not have a local extreme at that point. \\
+	\phantom{} \\
+	\textbf{Second Derivative Test:} If $f$ is defined on $(a,b)$, $f''(x)$ is continuous near $x=c$ and $f'(c) = 0$, then if $f''(c) > 0$ then $f$ has a local maxima at that point and vice versa. If $f''(c) = 0$, the test has failed. \\
+	\phantom{} \\
+	\phantom{} \\
+	\textbf{Increasing/Decreasing Function:} If $f(x_2) \geq f(x_1) \forall x_2 \geq x_1 \in D$, then $f$ is decreasing and vice versa. \\
+	\phantom{} \\
+	\phantom{} \\
+	\textbf{Concavity:} If the graph of $f$ lies above all of its tangents in $(a,b)$, i.e. $f''(x) \geq 0 \forall x \in D$, then $f$ is concaved upwards and vice versa. \\
+}
+
+\def\Integration{
+	\phantom{} \\ \phantom{} \\ \phantom{} \\ % space for integral sign
+	\textbf{Types of integrals} \\
+	\phantom{} \\
+	Proper: $a,b \in \mathbb{R}$ \\
+	\phantom{} \\
+	Improper type I: $a,b = \pm \infty$ \\
+	\phantom{} \\
+	Improper type II: $c \in (a,b)$ s.t. $\lim\limits_{x \rightarrow c} f(x) = \pm \infty$ \\
+	\phantom{} \\
+	L'Hôpital's rule: if $\lim\limits_{x \rightarrow \infty} \frac{f(x)}{g(x)}$ is indeterminate, then its limit is $\lim\limits_{x \rightarrow \infty} \frac{f'(x)}{g'(x)}$. If it is also indeterminate, repeat till a determinate form is achieved. \\
+	\phantom{} \\
+	\phantom{} \\
+	\textbf{Area:} If $y=f(x), g(x)$ and $x=a,b$ where $f(x), g(x)$ are continuous and $f(x) \geq g(x) \forall x \in [a,b]$, then $A = \int_{a}^{b} (f(x) - g(x)) dx$ \\
+	\phantom{} \\
+	\textbf{Volume:} If $y = f(x)$ is rotated around the $x$-axis, then the volume of the resulting solid is $V = \int_{a}^{b} A(x) dx$ \\
+	\phantom{} \\
+	\phantom{} \\
+	\textbf{Sequence} \\
+	\phantom{} \\
+	$f: \mathbb{N} \rightarrow \mathbb{R}$ s.t. $f(n) = a_n$ and $\{a_n\}_{n=1}^\infty = a_1, a_2, a_3, \dots$ \\
+	\phantom{} \\
+	$\{a_n\}$ is convergent and has $\lim\limits_{n \rightarrow \infty} \{a\} = L$ if $\forall \varepsilon > 0, \exists N$ s.t. $|a_n - L| < \varepsilon^{n \rightarrow \infty}$ for $n > N$ \\
+	\phantom{} \\
+	If $\{a_n\} = f(x)$ and $\lim\limits_{x \rightarrow \infty} f(x) = L$, then $\lim\limits_{n \rightarrow \infty} a_n = \lim\limits_{x \rightarrow \infty \infty} f(x) = L$ \\
+	\phantom{} \\
+	If $\lim\limits_{n \rightarrow \infty} |\{a_n\}| = 0$ then $\lim\limits_{n \rightarrow \infty} \{a_n\} = 0$ \\
+	\phantom{} \\
+	Monotonic (Increasing/Decreasing) sequence: $\{a_n\}$ is increasing if $a_n < a_{n+1} \forall n \geq 1$ and vice versa. \\
+	\phantom{} \\
+	\phantom{} \\
+	\textbf{Series} \\
+	\phantom{} \\
+	$\sum_{n = 1}^{\infty} a_n = a_1 + a_2 + a_3 + \dots$. \\
+	\phantom{} \\
+	Partial sum, $S_n = \sum_{i=1}^{n} a_n$. \\
+	\phantom{} \\
+	Partial sequence, $\{S_n\} = \{S_1, S_2, S_3, \dots , S_n\}$. \\
+	\phantom{} \\
+	If $\{S_n\}$ is convergent, then $\sum_{n=1}^{\infty} a_n$ is convergent as well. \\
+	\phantom{} \\
+	If $\sum_{n=1}^{\infty} a_n$ is convergent, then $\lim\limits_{n \rightarrow \infty} \{a_n\} = 0$ and if it is divergent then $\lim\limits_{n \rightarrow \infty} a_n \not= 0$ or D.N.E.. \\
+	\phantom{} \\
+	If $\sum_{n=1}^{\infty} a_n$ and $\sum_{n=1}^{\infty} b_n$ are convergent, then $\sum_{n=1}^{\infty} ca_n$ and $\sum_{n=1}^{\infty} a_n + \sum_{n=1}^{\infty} b_n$ are also convergent and linear. \\
+	\phantom{} \\
+	Geometric Series, $\sum ar^{n-1} = a + ar + ar^2 + ar^3 + \dots$ converges when $|r| < 1$ and its $S_n = \frac{a}{1-r}$. \\
+	\phantom{} \\
+	Power Series, $\sum a_{n-1}x^{n-1} = a_0 + a_1x^1 + a_2x^2 + a_3x^3 + \dots$ is convergent when $|\lim a_n| < 1$ and may converge when $|\lim a_n| = 1$. \\
+	\phantom{} \\
+	Alternating Series, $\sum (-1)^nb_n = -b_1 + b_2 - b_3 + \dots$ converges if $b_n$ is decreasing and $\lim b_n = 0$ \\
+	\phantom{} \\
+	\phantom{} \\
+	\textbf{Arc Length,} $L = \int_{a}^{b} \sqrt{1 + \left( \frac{dy}{dx} \right)^2} dx$
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document} \begin{center} \begin{tikzpicture}
+
+% Shape of the document
+\begin{axis} [ticks=none, axis lines=middle, enlargelimits=true, 
+							xmin=0, xmax=100, ymin=0, ymax=50,
+							xlabel= \begin{Huge} \textbf{\Function} \end{Huge},
+							xlabel style={at = {(0,0)}, xshift=65cm},
+							ylabel= \begin{Huge} \rotatebox{90}{\textbf{Calculus II}} \end{Huge},
+							ylabel style={at = {(0,0)}, yshift=25cm}]
+	\addplot [name path = main, domain=0:100, samples=500, color=Black, very thick] {0.3*sin(0.1*deg(x))*x+30};
+	\addplot [domain=1:50, color=SeaGreen, very thick] {0.2*x + 31.7};
+	\addplot[name path = floor, draw = none] coordinates {(50,0.1) (100,0.1)};
+	\addplot[color=SeaGreen!40] fill between[of = main and floor, soft clip = {domain = 50:100}];
+\end{axis}
+
+\begin{scope}
+	\def\pathone{(5.75,10) -- (5.75,22.25) -- (8,22.75) -- (9,23) -- (10,23.5) -- (15,25.75)}
+	\def\pathtwo{(21,25.75) -- (21,25) -- (30,15) -- (30,10)}
+	\shapeparnode{1em}{.5em}{\pathone}{\pathtwo}{\Differentiation}
+\end{scope}
+
+\begin{scope}
+	\def\pathone{(34.5, 5) -- (34.5,13.25) -- (36,14) -- (37.75,16) -- (40, 19.5) -- (41.75,23) -- (45.25,30.5) -- (46.5, 33) -- (48.25,35.75) -- (51.25, 36.25) -- (51.25, 36.5)}
+	\def\pathtwo{(51,36.5) -- (53,36.5) -- (55,35) -- (61,20) -- (62,14) -- (62,5)}
+	\shapeparnode{1em}{.5em}{\pathone}{\pathtwo}{\Integration}
+\end{scope}
+
+\node[annotation, centered, font=,] at (51.2, 36.5) {\begin{Huge} $$\int_{a}^{b} f(x) dx$$ \end{Huge}};
+
+\end{tikzpicture} \end{center} \end{document}
