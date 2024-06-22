@@ -1,0 +1,250 @@
+\documentclass{article}
+
+% Packages and libraries
+\usepackage{lmodern, shapepar, microtype, lipsum, tikz, tikz-cd, parskip, amssymb, amsmath, physics, pgfplots, bigints}
+\usetikzlibrary{calc,patterns,angles,quotes}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage[paperheight = 41cm, paperwidth = 71cm, margin=1cm, heightrounded]{geometry}
+\usetikzlibrary{calc,fit,intersections,mindmap}
+\usepgfplotslibrary{fillbetween}
+\pgfplotsset{compat=1.18, height=40cm, width=70cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\\
+
+% Command to wrap text around shapes
+% (https://tex.stackexchange.com/questions/67032/fitting-text-to-a-shape-in-tikz?noredirect=1&lq=1)
+
+\def\shapeparnodeaccuracy{2}
+\newcommand\shapeparnode[6][]{
+	% 6 parameters:
+	% style for node (default:empty),
+	% h margin, v margin, left path, right path, text (just one paragraph!)
+	
+	% name left and right paths and compute there bounding boxes
+	\begin{scope}[local bounding box=leftbb]
+		\path[name path global=left,xshift=#2] #4;
+	\end{scope}
+	\node[inner ysep=-#3,inner xsep=0pt,fit=(leftbb)](leftbb){};
+	\begin{scope}[local bounding box=rightbb]
+		\path[name path global=right,xshift=-#2] #5;
+	\end{scope}
+	\node[inner ysep=-#3,inner xsep=0pt,fit=(rightbb)](rightbb){};
+	
+	% global bounding box
+	\path let
+	\p1=(leftbb.north west), \p2=(leftbb.south west),
+	\p3=(rightbb.north east), \p4=(rightbb.south east)
+	in
+	\pgfextra{
+		\pgfmathsetmacro{\ymin}{(\y1 < \y3) ? \y1 : \y3}
+		\pgfmathsetmacro{\ymax}{(\y2 > \y4) ? \y2 : \y4}
+		\typeout{ymin \ymin}
+		\typeout{ymax \ymax}
+	} node[inner sep=0,fit={(\x1,\ymin pt)(\x3,\ymax pt)}](mybb){};
+	
+	% compute nb steps
+	\path let \p1=(mybb.north), \p2=(mybb.south) in
+	\pgfextra{
+		\pgfmathsetmacro{\fnthght}{1em/\shapeparnodeaccuracy}
+		\pgfmathtruncatemacro{\nbsteps}{(\y1-\y2)/\fnthght}
+		\xdef\nbsteps{\nbsteps}
+		\typeout{nb steps \nbsteps}
+	};
+	
+	% horizontal references
+	\path (mybb.north) -- (mybb.south)
+	\foreach \cnt in {0,1,...,\nbsteps}{
+		\pgfextra{\pgfmathsetmacro{\pos}{\cnt/\nbsteps}}
+		coordinate[pos=\pos] (ref \cnt)
+	};
+	
+	% left and right boundaries coordinates
+	\foreach \cnt in {0,1,...,\nbsteps}{
+		% an horizontal line from left to right
+		\path[name path=ltor]
+		(mybb.west |- ref \cnt) --  (mybb.east |- ref \cnt);
+		% same line from right to left
+		\path[name path=rtol]
+		(mybb.east |- ref \cnt) -- (mybb.west |- ref \cnt);
+		% left boundary
+		\path[name intersections={of=rtol and left,by={l \cnt},sort by=rtol}];
+		% right boundary
+		\path[name intersections={of=ltor and right,by={r \cnt},sort by=ltor}];
+	}
+	% start point (and initial value of boundshape)
+	\path let \p1=(l 0) in 
+	\pgfextra{
+		\pgfmathsetmacro{\xstart}{\x1}
+		\xdef\boundshape{{0}{0}b{\xstart}}
+		\xdef\xmin{\xstart}
+		\xdef\xmax{\xstart}
+	};
+	
+	% top and bottom
+	\path let \p1=(l 0), \p2=(l \nbsteps) in
+	\pgfextra{
+		\pgfmathsetmacro{\ystart}{\y1}\xdef\ystart{\ystart}
+		\pgfmathsetmacro{\yending}{\y2}\xdef\yending{\yending}
+	};
+	% incremental definition of boundshape
+	\foreach \cnt in {0,1,...,\nbsteps}{
+		\path let \p1=(l \cnt), \p2=(r \cnt) in
+		\pgfextra{
+			\pgfmathsetmacro{\start}{\x1}
+			\pgfmathsetmacro{\len}{\x2-\x1}
+			\pgfmathsetmacro{\ypos}{\cnt/\nbsteps*(\ystart - \yending)}
+			{\let\\=\relax \xdef\boundshape{\boundshape\\{\ypos}t{\start}{\len}}}
+			\pgfmathsetmacro{\xmin}{(\xmin < \start) ? \xmin : \start}
+			\xdef\xmin{\xmin}
+			\pgfmathsetmacro{\xmax}{(\xmax > \start + \len) ? \xmax : \start + \len}
+			\xdef\xmax{\xmax}
+		};
+	}
+	% draw the node with text in a shapepar
+	\pgfmathsetmacro{\ymax}{\ystart - \yending}
+	{\let\\=\relax \xdef\boundshape{\boundshape\\{\ymax}e{0}}}
+	\node[#1,text width=\xmax pt - \xmin pt,align=flush right,
+	anchor=north west,inner sep=0]
+	at (mybb.north west -| \xmin pt,0)
+	{\Shapepar[1pt]{\boundshape}#6\par};
+}
+
+% Text
+
+\def\Vector{
+	\begin{Huge}
+		\textbf{Vector} is a quantity having magnitude and direction. 
+		$\vec{A} = |A| \hat{A} = A_1 \hat{i} + A_2 \hat{j} + A_3 \hat{k} + \dots = \left<A_1, A_2, A_3, \dots\right>$
+	\end{Huge}
+}
+
+\def\PositionVector{
+	$\vec{r} = \vec{AB} = \vec{OB} - \vec{OA}$ is the position vector between 2 points. \\
+ 	\phantom{} \\
+	2 vectors are \textbf{colinear} if they lie in the same axis, i.e. $\vec{A} \cross \vec{B} = \vec{O}$. If they are non colinear, then their intersection point determine a plane with the equation $\vec{r} = x\vec{a} + y\vec{b}$. \\
+	Similarly, 3 vectors are \textbf{coplanar} if they lie in the same plane, i.e. $[\vec{A}\vec{B}\vec{C} = \vec{O}]$. If they are non coplanar, then their intersection point determines a space, $\vec{r} = x\vec{a} + y\vec{b} + z\vec{c}$. \\
+	\phantom{} \\
+	\textbf{Direction Vectors:} A vector, $\vec{A}$, in space forms angles with the axis s.t. $\cos(\alpha) = \frac{A_1}{A}$, $\cos(\beta) = \frac{A_2}{A}$, and $\cos(\gamma) = \frac{A_3}{A}$ s.t. $\cos[2](\alpha) + \cos[2](\beta) + \cos[2](\gamma) = 1$.
+	\phantom{} \\ \phantom{} \\
+	\textbf{Vector Algebra:} \\
+	$\vec{A} = \vec{B} \iff A=B \text{ and } \hat{A} = \hat{B}$ \\
+	$\text{for } \vec{A}, \exists -\vec{A} \text{ s.t. } |\vec{A}| = |-\vec{A}| \text{ and } \hat{A} = -(\hat{-A})$ \\
+	$\exists \vec{O} \text{ s.t. } \vec{A} + \vec{O} = \vec{A} \text{ and } \vec{A} + (-\vec{A}) = \vec{O}$ \\
+	$m\vec{A} = \vec{B} \text{ s.t. } B=mA \text{ and } \hat{B} = m\hat{A}$ \\
+	$\vec{A} + \vec{B} = \vec{B} + \vec{A}$ \\
+	$(\vec{A} + \vec{B}) + \vec{C} = \vec{A} + (\vec{B} + \vec{C})$ \\
+	$m(n\vec{A}) = (mn)\vec{A}$ \\
+	$(m+n)\vec{A} = m\vec{A} + n\vec{A}$ \\
+	$m(\vec{A} + \vec{B}) = m\vec{A} + m\vec{B}$ \\
+	\phantom{} \\ \phantom{} \\
+	\textbf{Dot Product:} $\vec{A} \cdot \vec{B} = A_1B_1 + A_2B_2 + A_3B_3 + \dots = AB\cos(\theta)$ \\
+	Algebra: commutative, associative and distributive. \\
+	Unit vectors: $\hat{i} \cdot \hat{i} = \hat{j} \cdot \hat{j} = \hat{k} \cdot \hat{k} = 1$ and $\hat{i} \cdot \hat{j} = \hat{j} \cdot \hat{k} = \hat{k} \cdot \hat{i} = 0$. \\
+	if $\vec{A} \cdot \vec{B} = 0$ and $\vec{A}, \vec{B} \not= \vec{O}$, then $\vec{A} \perp \vec{B}$ .\\
+	Projection of $\vec{A}$ on $\vec{B} = \vec{A} \cdot \hat{B}$. \\
+	\phantom{} \\ \phantom{} \\
+	\textbf{Cross Product,} $\vec{A} \cross \vec{B} = \mdet{i & j & k & \dots \\ A_1 & A_2 & A_3 & \dots \\ B_1 & B_2 & B_3 & \dots \\ \vdots & \vdots & \vdots & \phantom{}} = AB\hat{u}\sin(\theta); \hspace{0.5cm} \hat{u} = \pm \frac{\vec{A} \cross \vec{B}}{|\vec{A} \cross \vec{B}|}$ \\ \phantom{} \\
+	Algebra: associative and distributive, but not commutative, i.e. $\vec{A} \cross \vec{B} = - (\vec{A} \cross \vec{B})$. \\
+	Unit vectors: $\hat{i} \cross \hat{i} = \hat{j} \cross \hat{j} = \hat{k} \cross \hat{k} = 0$, $\hat{i} \cross \hat{j} = \hat{k}$, $\hat{j} \cross \hat{k} = \hat{1}$ and $\hat{k} \cross \hat{i} = \hat{j}$. \\
+	if $\vec{A} \cross \vec{B} = \vec{O}$ and $\vec{A}, \vec{B} \not= \vec{O}$, then $\vec{A} || \vec{B}$. \\
+	Area of a parallelogram = $|\vec{A} \cross \vec{B}|$. \\
+	\phantom{} \\ \phantom{} \\
+	\textbf{Triple Product:}  \\
+	Scalar: $(\vec{A} \cdot \vec{B}) \vec{C}$. \\
+	Box: $\vec{A} \cdot (\vec{B} \cross \vec{C}) = [\vec{A}\vec{B}\vec{C}]$. \\
+	Cross: $\vec{A} \cross \vec{B} \cross \vec{C}$. \\
+	Equation of a space is $[\vec{A}\vec{B}\vec{C}] = \vec{O}$, where $\vec{A} = \vec{PP_1}$, $\vec{B} = \vec{P_2P_1}$ and $\vec{C} = \vec{P_3P_1}$ \\ where $\vec{P} = <x,y,z>$ and $P_1, P_2, P_3$ are points in that space.
+}
+
+\def\Differentiation{
+	\begin{Large} \textbf{Differentiation} \end{Large} \\
+	\phantom{} \\
+	If $\vec{r}(u) = x(u)\hat{i} + y(u)\hat{j} + z(u)\hat{k}$, then $\frac{d\hat{r}}{du} = \frac{dx}{du} \hat{i} + \frac{dy}{du} \hat{j} + \frac{dz}{du} \hat{k}$. \\
+	\phantom{} \\
+	Del operator: $\vec{\nabla} = \frac{\partial}{\partial x} \hat{i} + \frac{\partial}{\partial y} \hat{j} + \frac{\partial}{\partial z} \hat{k} + \dots$. \\
+	\phantom{} \\
+	Gradient of a scalar function, $\vec{\nabla} \phi$. \\
+	\phantom{} \\
+	Divergence of a vector function, $\vec{\nabla} \vec{V}$. \\
+	\phantom{} \\
+	Curl of a vector function, $\vec{\nabla} \cross \vec{V}$. \\
+}
+
+\def\Integration{
+	\begin{Large} \textbf{Integration} \end{Large} \\
+	\phantom{} \\
+	If $\vec{r}(u) = x(u)\hat{i} + y(u)\hat{j} + z(u)\hat{k}$, then $\int_{a}^{b} \vec{r} (u) du = \hat{i} \int_{a}^{b} x(u) du + \hat{j} \int_{a}^{b} y(u) du + \hat{k} \int_{a}^{b} z(u) du$. \\
+	\phantom{} \\ \phantom{} \\
+	\textbf{Line Integral} of $\vec{V}(x,y,z)$ along a curve $c$ joining $a,b$ is $ \vec{V} \cdot d\vec{r} = \int_{a}^{b} A_1dx + \int_{a}^{b} A_2dy + \int_{a}^{b}A_3dz$. \\
+	\phantom{} \\
+	If $c$ is a piecewise smooth curve, i.e. $c = c_1 \cup c_2 \cup c_3 \cup \dots$, then $\underset{c}{\int} \vec{A} \cdot d\vec{r} = \underset{c_1}{\int} \vec{A} \cdot d\vec{r} + \underset{c_2}{\int} \vec{A} \cdot d\vec{r} + \dots$. \\
+	\phantom{} \\ \phantom{} \\
+	\textbf{Surface integral} of $S$ (a 2 sided surface) is $\underset{S}{\int\int} \vec{A} \cdot \hat{n} \frac{dydx}{|\hat{n} \cdot \hat{k}|} = \int_{x_1}^{x_2} \int_{y_1}^{y_2} \frac{\vec{A} \cdot \hat{n}}{|\hat{n} \cdot \hat{k}|} dydx$ where $\hat{n} = \frac{\vec{\nabla} \phi}{|\vec{\nabla} \phi|}$ where $\phi$ is the equation of $S$. \\
+	\phantom{} \\
+	This assumes the surface forms a projection on the $xy$ plane and $y_2=f(x)$. Depending on the surface, the specifics of the integral can change. 
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document} \begin{center} \begin{tikzpicture}
+
+% Shape of the document
+
+\draw [->, ultra thick] (0.25,1.25) -- (0.25,38);       % z axis
+\draw [->, ultra thick] (0.25,1.25) -- (67,1.25);       % y axis 
+\draw [->, ultra thick] (0.25,1.25) -- (20, 18.25);    % x axis
+
+\draw [->, ultra thick] (0.25,1.25) -- (0.25,5);     % k
+\draw [->, ultra thick] (0.25,1.25) -- (5,1.25);     % j
+\draw [->, ultra thick] (0.25,1.25) -- (5, 5.33);    % i
+
+\node[annotation, font=, text width=0cm] at (0.08, 38.3) {\Huge $z$};     % z label
+\node[annotation, font=, text width=0cm] at (67, 1.25) {\Huge $y$};        % y label
+\node[annotation, font=, text width=0cm] at (20.1, 18.4) {\Huge $x$};    % x label
+
+\node[annotation, font=, text width=0cm] at (-0.5, 3.25) {\Huge $\hat{k}$};    % k label
+\node[annotation, font=, text width=0cm] at (2.5, 0.5) {\Huge $\hat{j}$};         % j label
+\node[annotation, font=, text width=0cm] at (2.5,4) {\Huge $\hat{i}$};             % i label
+
+\draw (20,18.25) coordinate (i1) -- (0.25,1.25) coordinate (i2) --  (10,35) coordinate (i3) 
+	pic["$\alpha$", draw=black, angle eccentricity=1.2, angle radius=1.5cm] {angle=i3--i2--i1}; % alpha
+\draw (67,1.25) coordinate (j1) -- (0.25,1.25) coordinate (j2) --  (10,35) coordinate (j3) 
+	pic["$\beta$", draw=black, angle eccentricity=1.2, angle radius=1cm] {angle=j3--j2--j1}; % beta
+\draw (0.25, 38) coordinate (k1) -- (0.25,1.25) coordinate (k2) --  (10,35) coordinate (k3) 
+	pic["$\gamma$", draw=black, angle eccentricity=1.2, angle radius=2cm] {angle=k3--k2--k1}; % gamma
+
+\node[annotation, centered, font=] at (0,20) {\rotatebox{90}{\begin{Huge} \textbf{Vector Analysis} \end{Huge}}}; % title
+\node[annotation, centered, font=, text width=50cm] at (40,0.1) {\Vector}; % defination
+
+% PositionVector
+
+\draw[->, ultra thick, RoyalBlue] (0.25, 1.25) -- (10, 35);
+
+\begin{scope}
+	\def\pathone{(-0.8,1.25) -- (10,35)}
+	\def\pathtwo{(0.25,1.25) -- (39.46,35)}
+	\shapeparnode{1em}{.5em}{\pathone}{\pathtwo}{\PositionVector}
+\end{scope}
+
+% Differentiation and Integration
+
+\draw [smooth, ultra thick, BlueGreen] plot coordinates{(35,20) (40, 25) (45,25) (50,22.5)}; % curve
+\draw [smooth, ultra thick, BlueGreen] plot coordinates{(50,22.5) (55,20) (60, 19.5) (65, 22)}; % curve
+\draw [->, ultra thick, MidnightBlue] (0.25,1.25) -- (47.5,23.75); % vector
+\draw [ultra thick, MidnightBlue] (32,18.75) -- (52.3, 35); % gradient
+\filldraw [smooth, ultra thick, BlueGreen, opacity=0.2] (50,1.3) -- plot coordinates{(50,22.5) (55,20) (60, 19.5) (65, 22)} -- (65,1.3); % area
+
+\begin{scope}
+	\def\pathone{(32, 18.75) -- (47, 30.76)}
+	\def\pathtwo{(65, 35) -- (65, 18.75)}
+	\shapeparnode{1em}{.5em}{\pathone}{\pathtwo}{\Differentiation}
+\end{scope}
+
+\begin{scope}
+	\def\pathone{(50,1.3) -- (50,20)}
+	\def\pathtwo{(65,20) -- (65, 1.3)}
+	\shapeparnode{1em}{.5em}{\pathone}{\pathtwo}{\Integration}
+\end{scope}
+
+\end{tikzpicture} \end{center} \end{document}
