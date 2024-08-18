@@ -6,7 +6,7 @@ This is just a side project I am doing to revise my courses and practice LaTeX.
 
 <h2>Quick Links to PDFs</h2>
 
-[MATH 103: Elementary Linear Algebra](pdf/ElementaryLinearAlgebra.pdf) (Incomplete)
+[MATH 103: Elementary Linear Algebra](pdf/ElementaryLinearAlgebra.pdf)
 
 [MATH 201: Calculus II](pdf/CalculusII.pdf)
 
