@@ -1,0 +1,172 @@
+\documentclass{standalone}
+
+\usepackage{parskip}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{rotating}
+
+\def\MatrixOne{
+	\textbf{Algebra} \\
+	$A+B=B+A$ \\
+	$A \cdot B \not= B \cdot A$ \\
+	$a + B = B + a$ \\
+	$A+(B+C)=(A+B)+C$ \\
+	$A(BC) = (AB)C$ \\
+	$a(bC) = (ab)C$ \\
+	$A(B+C) = AB + AC$ \\
+	$a(B+C)=aB+aC$ \\
+	\phantom{} \\
+	\phantom{} \\
+	\textbf{Operations} \\
+	$A \pm B$ is possible if their sizes are the same. \\
+	$A \cdot B$ is possible if col(A) = row(B) and $AB_{ij} = A_i \cdot B_j$. \\
+	Power, $A^n = A \cdot A^2 \cdot A^3 \cdot \dots \cdot A^n$ for $n>0$. If $A$ is invertible then $n<0$. \\
+	Inverse, $A^{-1} = B \text{ iff } BA=AB=I$. Moreover $(AB)^{-1} = B^{-1}A^{-1}$. \\
+	Transpose, $A_{m \times n}^T = A_{n \times m}$ s.t. $(A^T)^T = A$ and $(AB)^T = B^TA^T$. \\
+	\phantom{} \\
+	\phantom{} \\
+	\textbf{Common Matrices} \\
+	Zero matrix, $O$ s.t. $A \pm O = O \pm A = A$, $A-A=O$ and $OA=AO=O$. \\
+	Identity matrix, $I_n$ s.t. all diagonal elements are 1 and all non-diagonal elements are 0. \\	
+	Elementary Matrix, $E$ is matrix formed by a single row/col operation on $I$. $E$ transfers its operations when multiplied. $E$ is invertible and $E^{-1}$ is also an elementary matrix. \\
+	\phantom{} \\
+	\phantom{} \\
+	\textbf{Invertibility} \\
+	$A$ is invertible $iff$: \\
+	$A^{-1}$ is invertible and $(A^{-1})^{-1} = A$ or \\
+	$A^n$ is invertible and $(A^n)^{-1} = (A^{-1})^n$ for $n \in \mathbb{N}$ or  \\
+	$kA$ is invertible and $(kA)^{-1} = k^{-1}A^{-1}$ for $k \not= 0$ \\
+	\phantom{} \\
+	\phantom{} \\
+	\textbf{Row Echelon Form of a Matrix} \\
+	first non zero element in a row is 1 \\
+	all rows with only zeros are grouped \\
+	lower leading 1 is right of the upper leading 1 \\
+	\phantom{} \\
+	Reduced Row Echelon Form of a Matrix: each column with a leading 1 has 0 in all rows
+	\phantom{} \\
+	\phantom{} \\
+	\textbf{Row and inverse Row Operations} \\
+	$R_{ij}$ represents ith and jth row of matrix $A$ \\
+	$aR_i = \frac{1}{a} R_i$ for $a \not= 0$ (multiples can be taken out or multiplied) \\
+	$R_{ij} = R_{ji}$ (rows can be interchanged) \\
+	$R_i + aR_j = R_{i+cj}$ (one row can me multiplied and added to another row) \\
+	\phantom{} \\
+	Column and Inverse Column Operations are the same
+}
+
+\def\MatrixTwo{
+	\textbf{Square Matrices} \\
+	\phantom{} \\
+	Equivalent Statements for $A_{n \times n}$: \\
+	$A$ is invertible \\
+	$Ax=O$ has only the trivial solution, i.e. $x = O$ \\
+	$Ax=b$ is consistent for every $b_{n \times 1}$ and has only one sol, i.e. $x = A^{-1}b$ \\
+	\phantom{} \\
+	Properties \\
+	reduced row echelon form = $I_{n \times n}$ \\
+	$A = E_0 \cdot E_1 \cdot E_2 \cdot \dots \cdot E_n$ \\
+	determinant of $A = \det(A) \not= O$ \\
+	\phantom{} \\
+	Common Classes and their Properties\\
+	Diagonal matrix, $D_n$ s.t. only diagonal elements are non-zero while diagonal elements are 0. Upper matrix, $U$ s.t. the diagonal and upper elements are non-zero while other are 0. Lower matrix, $U$ s.t. the diagonal and lower elements are non-zero while other are 0. Hence $U^T = L$ and $L^T = U$, $L_a \cdot L_b = L_c$ and $U_a \cdot U_b = U_c$. If $U,L$ have non zero determinant, then they are invertible and $L^{-1}=L$ and $U^{-1}=U$ \\
+	Determinant = $d_1 \cdot d_2 \cdot d_3 \dots d_n$ \\
+	Symmetric matrix is s.t. the the upper diagonal is reflected onto the lower diagonal. \\
+	$A^T=A$ \\
+	If $A,B$ are symmetrical, then $A \pm B$ and $kA$ are also symmetrical \\
+	If $A$ is invertible, then $AA^T$, $A^TA$ and $A^{-1}$ are also symmetrical  \\
+	\phantom{} \\
+	\phantom{} \\
+	\textbf{Determinant} \\
+	\phantom{} \\
+	$M_{ij}$ is the matrix without the ith row and jth col. \\
+	$C_{ij} = (-1)^{i+j}M_{ij}$ \\
+	Adjoint of $A$ is a matrix s.t. $A_{ij} = C_{ij}$ \\
+	Determinant of a 3 by 3 matrix, $\det(A) = a_{1j}C_{1j} + a_{2j}C_{2j} + \dots + a_{nj}C_{nj} = a_{i1}C_{i1} + a_{i2}C_{i2} + \dots + a_{im}C_{im}$ \\
+	\phantom{} \\
+	Properties \\
+	$\det(A) = det(A^T)$ \\
+	if $R_i \propto R_j$ or $C_i \propto C_j$, then det = 0 \\
+	if size of $A = n \times n$, then $\det(kA) = k^n\det(A)$ \\
+	if $A,B,C$ have the same size ($n \times n$) that differ by rth row s.t. $C_r = A_r + B_r$, then $\det(C) = \det(A) + \det(B)$ \\
+	If $A,B$ have the same size ($n \times n$), then $\det(A \cdot B) = \det(A) \cdot \det(B)$ \\
+	If $A$ is invertible, then $\det(A^{-1}) = (\det(A))^{-1}$ \\
+	\phantom{} \\
+	Operations: \\
+	If $A$ has the size $n \times n$, \\
+	If $A \rightarrow aR_i \rightarrow B$, then $\det(A) = a\det(B)$ \\
+	If $A \rightarrow R_{ij} \rightarrow B$, then $\det(A) = -\det(B)$ \\
+	If $A \rightarrow R_i + aR_j \rightarrow B$, then $\det(A) = \det(B)$ \\
+	\phantom{} \\
+	Determining Inverse Matrix using Determinant \\
+	$A^{-1} = \frac{1}{det(A)} \cdot \text{Adj}(A)$ \\
+	Crammer's Rule, $x_j = \frac{\det(A_j)}{\det(A)}$ where $A_j = A$ s.t. the jth col contains only $x$
+}
+
+\def\VectorSpaces{
+Let $V$ be an arbitrary non empty set on which two operations (addition and multiplication) are defined \\
+\phantom{} \\
+\textbf{Axioms of a Vector Space:} \\
+$u,v \in V$, then $u+v \in V$ (closure law of +) \\
+$u+v=v+u$ (commutative) \\
+$u+(v+w)=(u+v)+w$ (associative) \\
+$\exists O \in V$ s.t. $O+u=u+O=u$ $\forall u \in V$ (additive identity) \\
+$\exists -u$ s.t. $-u+u=u+(-u)=O$ $\forall u \in V$ (additive inverse) \\
+if $u \in V$ and $k \in \mathbb{R}$, then $ku \in V$ (closure law of x) \\
+$k(u+v) = ku + kv$ (distributive) \\
+$(k+m)u = ku+mu$ (distributive) \\
+$k(mu) = (km)u$ (associative) \\
+$1u = u$ \\
+\phantom{} \\
+\phantom{} \\
+\textbf{Subspaces} \\
+$W$ is a subspace of $V$ iff closure law of addition and multiplication hold and $W \subset V$. \\
+Subspaces of $\mathbb{R}^n$ include $\mathbb{R}^2$ ($\{0\}$ and the set of all lines through the origin) and $\mathbb{R}^3$ ($\{0\}$, the set of all lines through the origin and the set of all planes passing through the origin) \\
+\phantom{} \\
+\phantom{} \\
+\textbf{Linear System:} \\
+If $Ax=0$ is a homogeneous linear system with $m$ equations and $n$ unknown variables, then the set of solution is a subspace of $\mathbb{R}^n$. \\
+Linear combination of vectors, $W = k_1v_1 + k_2v_2 + k_3v_3 + \dots k_rv_r$ where $k$ are scalars and $v$ are vectors. \\
+If $V = \{v_1,v_2,v_3, \dots, v_r\}$, then the set $W$ of linear combinations is a subspace of $V$. $W$ is the smallest subspace of $V$ that contains $v_1, v_2, v_3, \dots v_r$ in the sense that every other subspace containing $v_1, v_2, v_3, \dots v_r$ must also contain $W$. \\
+If $S = \{v_1, v_2, v_3, \dots, v_r\}$, then $W$ of $V$ is the space spanned by $S$, i.e. $W = \text{span}(S)$, if det $\not= 0$. \\
+\phantom{} \\
+$Ax = O$ has at least one solution, i.e. trivial sol. If it is the only solution, then the system is linearly independent (det $\not= 0$) and $A$ is invertible. If there are any non-trivial solutions, the the system is linearly dependent (det = 0) and $A$ is not invertible. \\
+A set $S$ with at least 2 vectors is linearly dependent iff at least one of the vectors can be expressed as a linear combination of the other vector (i.e. the vectors do not lie in the same axis or plane). Otherwise it is linearly independent. \\
+If $S$ spans $V$ and is linearly independent, then $S$ is the basis of $V$. \\
+\phantom{} \\
+\phantom{} \\
+\textbf{Dimension} \\
+dim($V$) = number of vectors in a basis of $V$ \\
+$\dim(\mathbb{R}^n)=n$ \\
+$\dim(P_n) = n+1$ \\
+$\dim(M_{mn}) = mn$ \\
+\phantom{} \\
+number of vectors in bases = $r$ \\
+if $r < \dim(V)$, it does not span $V$ \\
+if $r = \dim(V)$, it spans $V$ and forms basis for $V$ \\
+if $r > \dim(V)$, the vectors are linearly dependent \\
+}
+
+\begin{document}
+\begin{tikzpicture}
+	\draw [color=white] (0,0) rectangle (68	,22);
+	
+	\draw [rounded corners=0.1cm, ultra thick] (2,21.5) -- (1,21.5) -- (1,0.5) -- (2,0.5);
+	\draw [dotted] (16,21.5) -- (16,1);
+	\draw [rounded corners=0.1cm, ultra thick] (35,21.5) -- (36,21.5) -- (36,0.5) -- (35,0.5);
+	\draw [rounded corners=0.1cm, ultra thick] (38,21.5) -- (37,21.5) -- (37,0.5) -- (38,0.5);
+	\draw [rounded corners=0.1cm, ultra thick] (56,21.5) -- (57,21.5) -- (57,0.5) -- (56,0.5);
+	
+	\draw [ultra thick] (58,12) -- (62,12);
+	\draw [ultra thick] (58,10) -- (62,10);
+	
+	\draw [rounded corners=0.1cm, ultra thick] (64,21.5) -- (63,21.5) -- (63,0.5) -- (64,0.5);
+	\draw [rounded corners=0.1cm, ultra thick] (66,21.5) -- (67,21.5) -- (67,0.5) -- (66,0.5);
+	
+	\node [text width=15cm] at (9,11) {\MatrixOne};
+	\node [text width=19cm] at (26,11) {\MatrixTwo};
+	\node [text width=19cm] at (47,11) {\VectorSpaces};
+	\node at (65,11) {\begin{turn}{-90} \Huge \textbf{Elementary Linear Algebra} \end{turn}};
+\end{tikzpicture}
+\end{document}
