@@ -32,6 +32,6 @@ This is just a side project I am doing to revise my courses and practice LaTeX.
 
 [MATH 313: Group Theory](pdf/GroupTheory.pdf) (Incomplete)
 
-[MATH 403: Graph Theory](pdf/GraphTheory.pdf) (Incomplete)
+[MATH 403: Graph Theory](pdf/GraphTheory.pdf)
 
 [MATH 404: Partial Differential Equations](pdf/PartialDifferentialEquations.pdf)
