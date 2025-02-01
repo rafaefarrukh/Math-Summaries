@@ -1,0 +1,6 @@
+*.[Rr]md linguist-language=R
+
+# Auto detect text files and perform LF normalization
+*       text=auto
+# Shell scripts require LF
+*.sh    text eol=lf
