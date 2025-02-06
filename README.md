@@ -6,32 +6,66 @@ This is just a side project I am doing to revise my courses and practice LaTeX.
 
 <h2>Quick Links to PDFs</h2>
 
-[MATH 103: Elementary Linear Algebra](pdf/ElementaryLinearAlgebra.pdf)
+[MATH 103: Elementary Linear Algebra Infographic](pdf/ElementaryLinearAlgebra.pdf)
 
-[MATH 201: Calculus II](pdf/CalculusII.pdf)
+<br>
 
-[MATH 203: Vector Analysis](pdf/VectorAnalysis.pdf)
+[MATH 201: Calculus II Infographic](pdf/CalculusII.pdf)
 
-[MATH 210: Set Theory](pdf/SetTheory.pdf)
+<br>
 
-[MATH 202: Ordinary Differential Equations](pdf/OrdinaryDifferentialEquations.pdf)
+[MATH 203: Vector Analysis Infographic](pdf/VectorAnalysis.pdf)
 
-[MATH 209: Linear Algebra](pdf/LinearAlgebra.pdf) (Incomplete) and [Notes](pdf/LinearAlgebraNotes.pdf)
+<br>
 
-[MATH 301: Multivariable Calculus](pdf/MultivariableCalculus.pdf) (Incomplete)
+[MATH 210: Set Theory Infographic](pdf/SetTheory.pdf)
 
-[MATH 302: Mechanics](pdf/Mechanics.pdf) (Incomplete)
+<br>
 
-[MATH 307: Complex Numbers](pdf/ComplexNumbers.pdf) (Incomplete)
+[MATH 202: Ordinary Differential Equations Infographic](pdf/OrdinaryDifferentialEquations.pdf)
 
-[MATH 309: Real Analysis](pdf/RealAnalysis.pdf) (Incomplete) and [Notes](pdf/RealAnalysisNotes.pdf)
+<br>
 
-[MATH 310: Numerical Analysis](pdf/NumericalAnalysis-pdf) (Incomplete)
+[MATH 209: Linear Algebra Infographic](pdf/LinearAlgebra.pdf) (Incomplete)
 
-[MATH 311: Topology and Metric Spaces](pdf/TopologyAndMetricSpaces.pdf) (Incomplete) [Notes](pdf/TopologyAndMetricSpacesNotes.pdf)
+[MATH 209: Linear Algebra Notes](pdf/LinearAlgebraNotes.pdf)
 
-[MATH 313: Group Theory](pdf/GroupTheory.pdf) (Incomplete)
+<br>
 
-[MATH 403: Graph Theory](pdf/GraphTheory.pdf)
+[MATH 301: Multivariable Calculus Infographic](pdf/MultivariableCalculus.pdf) (Incomplete)
 
-[MATH 404: Partial Differential Equations](pdf/PartialDifferentialEquations.pdf)
+<br>
+
+[MATH 302: Mechanics Infographic](pdf/Mechanics.pdf) (Incomplete)
+
+<br>
+
+[MATH 307: Complex Numbers Infographic](pdf/ComplexNumbers.pdf) (Incomplete)
+
+<br>
+
+[MATH 309: Real Analysis Infographic](pdf/RealAnalysis.pdf) (Incomplete)
+
+[MATH 309: Real Analysis Notes](pdf/RealAnalysisNotes.pdf)
+
+<br>
+
+[MATH 310: Numerical Analysis Infographic](pdf/NumericalAnalysis-pdf) (Incomplete)
+
+<br>
+
+[MATH 311: Topology and Metric Spaces Infographic](pdf/TopologyAndMetricSpaces.pdf) (Incomplete)
+
+[MATH 311: Topology and Metric Spaces Notes](pdf/TopologyAndMetricSpacesNotes.pdf)
+
+<br>
+
+[MATH 313: Group Theory Infographic](pdf/GroupTheory.pdf) (Incomplete)
+
+<br>
+
+[MATH 403: Graph Theory Infographic](pdf/GraphTheory.pdf)
+
+<br>
+
+[MATH 404: Partial Differential Equations Infographic](pdf/PartialDifferentialEquations.pdf)
