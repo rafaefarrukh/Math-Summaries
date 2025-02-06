@@ -16,7 +16,7 @@ This is just a side project I am doing to revise my courses and practice LaTeX.
 
 [MATH 202: Ordinary Differential Equations](pdf/OrdinaryDifferentialEquations.pdf)
 
-[MATH 209: Linear Algebra](pdf/LinearAlgebra.pdf) (Incomplete)
+[MATH 209: Linear Algebra](pdf/LinearAlgebra.pdf) (Incomplete) and [Notes](pdf/LinearAlgebraNotes.pdf)
 
 [MATH 301: Multivariable Calculus](pdf/MultivariableCalculus.pdf) (Incomplete)
 
@@ -24,11 +24,11 @@ This is just a side project I am doing to revise my courses and practice LaTeX.
 
 [MATH 307: Complex Numbers](pdf/ComplexNumbers.pdf) (Incomplete)
 
-[MATH 309: Real Analysis](pdf/RealAnalysis.pdf) (Incomplete)
+[MATH 309: Real Analysis](pdf/RealAnalysis.pdf) (Incomplete) and [Notes](pdf/RealAnalysisNotes.pdf)
 
 [MATH 310: Numerical Analysis](pdf/NumericalAnalysis-pdf) (Incomplete)
 
-[MATH 311: Topology and Metric Spaces](pdf/TopologyAndMetricSpaces.pdf) (Incomplete)
+[MATH 311: Topology and Metric Spaces](pdf/TopologyAndMetricSpaces.pdf) (Incomplete) [Notes](pdf/TopologyAndMetricSpacesNotes.pdf)
 
 [MATH 313: Group Theory](pdf/GroupTheory.pdf) (Incomplete)
 
