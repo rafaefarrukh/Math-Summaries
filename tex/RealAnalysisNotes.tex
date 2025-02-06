@@ -1,0 +1,315 @@
+\documentclass{article}
+
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{parskip}
+\usepackage[most]{tcolorbox}
+
+\title{MATH 309: Real Analysis}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\break
+
+\section{Real Numbers}
+
+\subsection{Algebraic Properties}
+
+Algebraic properties of real numbers, $\forall a,b,c \in \mathbb{R}$
+\begin{itemize}
+	\item closure: $a+b \in \mathbb{R}$ and $a \cdot b \in \mathbb{R}$
+	\item commutative: $a+b = b+a$ and $a \cdot b = b \cdot a$
+	\item associative: $(a+b)+c = a+(b+c)$ and $(a \cdot b) \cdot c = a \cdot (b \cdot c)$
+	\item identity: $a+0 = 0+a = a$ and $1 \cdot a = a \cdot 1 = a$
+	\item inverse: $a+(-a) = -a+a=0$ and $a \cdot \frac{1}{a} = \frac{1}{a} \cdot a = 1$
+	\item distributive: $a \cdot (b+c) = a \cdot b + a \cdot c = (b+c) \cdot a$
+\end{itemize}
+
+These axioms are used to define numerous results, including:
+\begin{itemize}
+	\item $a+z=a \Rightarrow z = 0$
+	\item $ab=b$ st $b\not=0$ $\Rightarrow a=1$
+	\item $ab=0 \Rightarrow a \text{ or } b = 0$
+\end{itemize}
+
+\subsection{Order Properties}
+
+Order property of real numbers (aka law of Trichotomy): Let $\mathbb{P} = \{x \in \mathbb{R}: x > 0\}$ be closed under scalar addition and multiplication. Then for $a \in \mathbb{R}$, only one of the following holds:
+\begin{itemize}
+	\item $a\in \mathbb{P} \quad \Rightarrow a > 0$
+	\item $-a \in \mathbb{P} \quad \Rightarrow a < 0$
+	\item $a, -a \not\in \mathbb{P} \quad \Rightarrow a = 0$
+\end{itemize}
+
+The order property is used to define numerous results, including:
+\begin{itemize}
+	\item $a>b, b>c \Rightarrow a>c$
+	\item $a>b \Rightarrow a+c>b+c$
+	\item $a>b, c<0 \Rightarrow ac < bc$
+	\item $a \not= 0 \Rightarrow a^2 > 0$
+	\item $0 \leq a < \varepsilon, \quad \forall \varepsilon > 0 \Rightarrow a = 0$
+	\item $|a+b| \leq |a|+|b|$ (triangular identity)
+	\item $||a|-|b|| \leq |a-b|$
+\end{itemize}
+
+\subsection{Neighbourhood}
+
+Th neighbourhood of a point, $V_r(a) = \{x \in \mathbb{R}: |x-a| < r\} = (a-r, a+r)$. Some results include:
+\begin{itemize}
+	\item Let $U = \{x\in\mathbb{R}: 0 < x < 1\}$. If $\varepsilon < a, 1-a$, then $V_r(a) \subseteq U$
+	\item Let $x \in V_r(a)$ and $y \in V_r(b)$, then $x+y \in V_{2r}(a+b)$
+\end{itemize}
+
+\section{Boundaries}
+
+Let $S$ be a non-empty set, then it is
+\begin{itemize}
+	\item Bounded above if $\exists u \in \mathbb{R}$ st $s \leq u, \forall s \in S$. 
+		\subitem - The set $U$ containing all such $u$ is known as the upper bound of $S$.
+		\subitem - The supremum, $\sup(S) = \alpha$ if $\alpha \in U$ st $\alpha \leq u, \forall u \in U$.
+	\item Bounded below if $\exists l \in \mathbb{R}$ st $s \geq l, \forall s \in S$.
+		\subitem - The set $L$ containing all such $w$ is known as the lower bound of $S$.
+		\subitem - The infimum, $\inf(S) = \beta$ if $\beta \in L$ st $\beta \geq l, \forall l \in L$.
+	\item Bounded if it is bounded above and below and unbounded if it is not bounded.
+\end{itemize}
+
+Another method to define a supremum (and similarly infimum) is to let $S$ be non-empty set. Then $u \in \mathbb{R}$ is the supremum if $s \leq u, \forall s \in S$ and if $v < u \Rightarrow \exists s' \in S$ st $v < s'$.
+
+Boundaries are used to prove numerous properties and theorems, including
+\begin{itemize}
+	\item The completeness property of $\mathbb{R}$: Every non-empty subset of $\mathbb{R}$ that has an upper bound must also have a supremum in $\mathbb{R}$.
+	\item Archimedean Property: If $x \in \mathbb{R} \Rightarrow \exists n_x \in \mathbb{N}$ st $x \leq n_x$.
+	\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+		Let $x \in \mathbb{R}$ st $x > n, \forall n \in \mathbb{N}$\\
+		By the completeness theorem, $\sup(N) = u$\\
+		$\Rightarrow u-1$ is not an upper bound of $\mathbb{N}$ as $u-1 < u$\\
+		$\Rightarrow \exists m \in \mathbb{N}$ st $u-1 < m$\\
+		It follows $u < m+1$ which implies $u$ is not an upper bound which is a contradiction. 
+	\end{tcolorbox}
+	\item Density Theorem: $\mathbb{Q}$ is dense in $\mathbb{R}$
+	\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+		Let $x,y \in \mathbb{R}$ st $x < y$, then we need to show that $\exists r \in \mathbb{Q}$ st $x < r <y$ \\
+		$x < y \Rightarrow y-x > 0$ \\		
+		By Archimedean property, $\exists n \in \mathbb{N}$ st $0 < \frac{1}{n} < y-x \Rightarrow nx+1 < ny$ \\
+		Let $x>0$, then $\exists m \in \mathbb{N}$ st $m-1 \leq nx \leq m \Rightarrow m < nx+1$ \\
+		Hence $nx < m < nx+1 < ny \Rightarrow m < ny$ \\
+		$\Rightarrow nx < m < ny \Rightarrow x < \frac{m}{n} < ny$ \\
+		$\Rightarrow x < r < y$ where $r = \frac{m}{n} \in \mathbb{Q}$
+	\end{tcolorbox}
+\end{itemize}
+
+\section{Intervals}
+
+Let $S \subseteq \mathbb{R}$. If $x,y \in S$ st $x < y$ and $[x,y] \subseteq S$, then $S$ is an interval (Characterization Theorem).
+
+Nested Intervals Property: If $I_n = [a_n,b_n], n \in \mathbb{N}$ is a nested sequence of closed intervals, then $\exists \alpha \in \mathbb{R}$ st $\alpha \in I_n, \forall n \in \mathbb{N}$.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $I_n = [a_n, b_n], \forall n \in \mathbb{N}$ st $I_1 \supseteq I_2 \supseteq I_3 \supseteq \dots \supseteq I_n \supseteq \dots$ \\
+	$I_n = [a_n, b_n] \Rightarrow b_n \geq a_n$\\
+	$\because I_1 \supseteq In \therefore a_1 \leq a_n \leq b_n \leq b_1 \Rightarrow a_n \leq b_1 \Rightarrow A = \{a_n : n \in \mathbb{N}\} \leq b_1$\\
+	$\because b_1$ is an upper bound of $A \therefore \exists \alpha \in \mathbb{R}$ st $\sup(A) = \alpha$ and $a_n \leq \alpha, \forall n \in \mathbb{N} \quad - (1)$ \\
+	Let $A = \{a_k: k \in \mathbb{N}\}$ and $n \in \mathbb{N}$. Suppose
+	\begin{itemize}
+		\item $k < n$, then $I_k \supseteq I_n \Rightarrow a_k \leq a_n \leq b_n \leq b_k \Rightarrow a_k \leq b_n, \forall k < n$.
+		\item $k \geq n$, then $I_n \supseteq I_k \Rightarrow a_n \leq a_k \leq b_k \leq b_n \Rightarrow a_k \leq b_n, \forall k \geq n$.
+	\end{itemize}
+	Hence $a_k \leq b_n, \forall k \in \mathbb{N} \Rightarrow b_n$ is an upper bound and $\sup(A) = \alpha$ st $\alpha \leq b_n, \forall n \in \mathbb{N} \quad - (2)$ \\
+	From $(1)$ and $(2)$, $a_n \leq \alpha \leq b_n \Rightarrow \alpha \in [a_n,b_n] = I_n, \forall n \in \mathbb{N}$
+\end{tcolorbox}
+
+Using this property, we can show that $\mathbb{R}$ is uncountable.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $\mathbb{R}$ be countable, then $I_0 = [0,1] \subseteq \mathbb{R}$ is countable and can be written as a sequence $I_0 = \{x_1, x_2, \dots, x_n, \dots\}$ \\
+	Let $I_i \subset I_{i-1}$ st $x_i \not\in I_i$, then $I_1 \supset I_2 \supseteq \dots \supseteq I_n \supseteq \dots$\\
+	By the nested interval property, $\exists \alpha \in I_0$ st $\alpha \in I_n, \forall n \in \mathbb{N}$\\
+	$\because x_i \not\in I_i \therefore \alpha = x_n \not\in I_n, \forall n \in \mathbb{N}$\\
+	$\Rightarrow \alpha \not\in I_0$ which is a contradiction. Hence $I_0$ is uncountable, i.e. $\mathbb{R}$ is uncountable.
+\end{tcolorbox}
+
+\section{Sequences}
+
+A sequence $X: \mathbb{N} \rightarrow \mathbb{R}$ such that $X = (x_n: n \in \mathbb{N}) = (x_n)$. A subsequence $X'$ is derived from elements of $X$ while preserving their order. A $m$-tail of $X = (x_{n+m})$ is a subsequence which contains all elements of $X$ except the initial $m$ terms.
+
+\subsection{Limits}
+
+The limit of a sequence, $\lim\limits_{n \rightarrow \infty} X = x$ (also denoted as $X \rightarrow x$) st $\forall \varepsilon > 0, \exists k \in \mathbb{N}$ st $|x_n-x|<\varepsilon, \forall n \geq k$.
+
+A sequence is convergent if and only if $\overline{\lim}(x_n) = \underline{\lim}(x_n)$ where
+\begin{itemize}
+	\item limit superior $\overline{\lim}(x_n) = \lim \sup (x_n) = \sup\{z: z \text{ is a limit point of some subsequence of } (x_n)\}$.
+	\item limit inferior $\underline{\lim}(x_n) = \lim \inf (x_n) = \inf\{z: z \text{ is a limit point of some subsequence of } (x_n)\}$.
+\end{itemize}
+
+If subsequences of $X$ have different limits, then $X$ is divergent (divergence criteria). A sequence is properly divergent if:
+\begin{itemize}
+	\item $(x_n) \rightarrow + \infty$ if $\forall \alpha \in \mathbb{R}, \exists k \in \mathbb{N}$ st $s_n > \alpha \forall n \geq k$
+	\item $(x_n) \rightarrow - \infty$ if $\forall \alpha \in \mathbb{R}, \exists k \in \mathbb{N}$ st $s_n < \alpha \forall n \geq k$
+\end{itemize}
+
+Let $X=(x_n)$ be a sequence in $\mathbb{R}$ convergent on $x \in \mathbb{R}$. Then important properties and theorems related to limits of sequences include:
+\begin{itemize}
+	\item $X$ is bounded if $\exists M > 0$ st $|x_n| \leq M, \forall n \in \mathbb{N}$. 
+	\item Every convergent sequence is bounded but converse is not true.
+	\item If $x_n \geq 0, \forall n \in N$, then $x \geq 0$.
+	\item Let $Y = (y_n) \rightarrow y$. If $x_n \leq y_n, \forall n \in N$, then $x \leq y$.
+	\item Uniqueness theorem: each sequence in $\mathbb{R}$ can have at most one limit.
+	\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+		Let $X=(x_n)$ be a sequence st $\lim x_n = x_1, x_2$ \\
+		Then $\forall \varepsilon > 0, \exists k_1,k_2 \in \mathbb{N}$ st $|x_n-x_1|< \frac{\varepsilon}{2}, \forall n \geq k_1$ and $|x_n-x_2|< \frac{\varepsilon}{2}, \forall n \geq k_2$ \\
+		Consider $|x_1-x_2|$ \\
+		$ = |x_1-x_2 + x_n-x_n| = |(x_1-x_n) + (x_n-x_2)| \leq |x_n - x_1| + |x_n - x_2| < \frac{\varepsilon}{2} + \frac{\varepsilon}{2}$ \\
+		$\Rightarrow |x_1-x_2| < \varepsilon, \forall n \geq k$ where $k = \max(k_1, k_2)$ \\
+		$\Rightarrow |x_1-x_2| = 0 \Rightarrow x_1=x_2$
+	\end{tcolorbox}
+	\item Squeeze Theorem: let $X,Y,Z$ be convergent st $x_n \leq y_n \leq z_n \; \forall n \in \mathbb{N}$. If $x=z=w$, then $y=w$.
+	\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+		Let $x=z=w$ \\
+		$\Rightarrow \forall \varepsilon > 0, \exists k \in \mathbb{N}$ st $|x_n-w|, |z_n-w| < \varepsilon \; \forall n \geq k$ \\
+		$\Rightarrow - \varepsilon < x_n - w < \varepsilon$ and $- \varepsilon < z_n - w < \varepsilon$ \\
+		$\Rightarrow - \varepsilon < x_n - w < y_n - w < z_n - w < \varepsilon$ \\
+		$\Rightarrow - \varepsilon < y_n - w < \varepsilon$ \\
+		$\Rightarrow |y_n-w| < \varepsilon$ \\
+		$\Rightarrow Y \rightarrow w$		
+	\end{tcolorbox}
+\end{itemize}
+
+\subsection{Monotone Sequences}
+
+A monotonic sequence is a sequence which either increases or decreases.
+
+Monotone Convergence Theorem: a monotone sequence $X = (x_n)$ on $\mathbb{R}$ is convergent if and only it is bounded. From this, it follows that
+\begin{itemize}
+	\item $X$ is bounded increasing, then $X \rightarrow x = \sup\{x_n\}$
+	\item $X$ is bounded decreasing, then $X \rightarrow x = \inf\{x_n\}$
+\end{itemize}
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	$(\Rightarrow)$ Let $X = (x_n)$ be a monotone convergent sequence. Since every convergent sequence is bounded, therefore $X$ is bounded. \\\\	
+	$(\Leftarrow)$ Let $X$ be bounded, then $\exists M \in \mathbb{R}$ st $|x_n| \leq M \forall n \in \mathbb{N}$ \\
+	$\Rightarrow M$ is an upper bound for $\{x_n\}$ \\
+	By completeness property, $\exists \sup\{x_n\} = x' \in \mathbb{R}$ \\
+	$\Rightarrow \forall \varepsilon > 0, x' - \varepsilon < x' \Rightarrow x' - \varepsilon$ is not an upper bound for $\{x_n\}$ \\
+	$\Rightarrow x_k \in \{x_n\}$ st $x_k > x' - \varepsilon$. \\
+	Suppose $X$ is increasing, then $\forall n \geq k$, $x_n > x_k \Rightarrow  x_n > x' - \varepsilon$ \\
+	$\Rightarrow x' + \varepsilon > x' > x_n > x' - \varepsilon$ \\
+	$\Rightarrow x' + \varepsilon >  x_n > x' - \varepsilon$ \\
+	$\Rightarrow \varepsilon > x_n - x' > \varepsilon$ \\
+	$\Rightarrow |x_n-x'| < \varepsilon$ \\
+	$\Rightarrow (x_n) \rightarrow x'$ \\
+	Suppose $X$ is decreasing, then $Y=-X$ is increasing and $\lim(Y) = -sup(Y)$. \\
+	$\Rightarrow \lim(X) = \inf\{x_n\}$
+\end{tcolorbox}
+
+Monotone Subsequence Theorem: Every sequence in $\mathbb{R}$ has a monotone sequence.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	$x_m$ is peak term of $X$ st $x_m \geq x_n \; \forall n \geq m$ \\\\	
+	Assume $X$ is decreasing, then it has infinite peak terms $x_{m_1} \geq x_{m_2} \geq \dots \geq x_{m_k} \geq$. Hence $(x_{m_k})$ is a decreasing subsequence of $X$. \\\\
+	Assume $X$ is not decreasing, then it has finite peak terms. Order them st $x_{m_1} \geq x_{m_2} \geq \dots \geq x_{m_k}$. Since $x_{m_k}$ is the last peak term, hence $x_{m_{k+1}} = x_{s_1}$ is not a peak term. \\
+	Then $\exists s_2$ st $x_{s_1} < x_{s_2}$ where $s_2 > s_1$. And $\because s_2$ is not a peak term, then there $\exists s_3$ st $x_{s_2} < x_{s_3}$ where $s_3 > s_2$. \\
+	Hence $(x_{s_k})$ is a recursively defined increasing subsequence of $X$	
+\end{tcolorbox}
+
+\subsection{Cauchy Sequence}
+
+ $X = (x_n)$ is a cauchy sequence if $\forall \varepsilon > 0, \exists k(\varepsilon) \in N$ st $\forall n,m \geq k(\varepsilon)$, $|x_n-x_m| < \varepsilon$.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	let $X \rightarrow x$, then $\forall \varepsilon > 0, \exists k \in \mathbb{N}$ st $\forall n \geq k$, $|x_n-x| < \varepsilon/2$. \\
+	Consider $n,m > k(\varepsilon)$, then $|x_n-x_m| = |x_n-x+x-x_m| \leq |x_n-x| + |x_m-x| < \varepsilon$ \\
+	$\Rightarrow |x_n-x_m| < \varepsilon$
+\end{tcolorbox}
+
+Hence, A sequence is convergent on $\mathbb{R}$ if and only if it is cauchy.
+
+\subsection{Series}
+
+A series, $\sum_{n=1}^{\infty} x_n$ is the sum of all terms of a sequence $(x_n)$. A series is convergent if the sequence $(S_k)$ is convergent but the the converse is not true. $(S_k)$ is a recursively defined sequence where $S_k = \sum_{n=1}^{k}x_n = S_{k-1} + x_k$ is the partial sum of a series.
+
+\section{Functions}
+
+Let $A \subseteq \mathbb{R}$ and $c \in \mathbb{R}$. Then $c$ is a cluster point of $A$ if either of the following hold:
+\begin{itemize}
+	\item $\forall \delta > 0, \exists A' \subseteq A$ st $|A'| > 0, c \notin A'$ and $|x-c| < \delta$, i.e. $x \in V_\delta(c)$
+	\item $\exists (a_n)$ in $A$ st $(a_n) \rightarrow c$ where $c \notin \{a_n\}$
+\end{itemize}
+
+\subsection{Limit}
+
+For a function $f: A \rightarrow \mathbb{R}$,  $L$ is a limit of $f$ at $c$ (cluster point), i.e. $L = \lim\limits_{x \rightarrow c} f(x)$, if either of the following hold:
+\begin{itemize}
+	\item $\forall \varepsilon > 0, \exists \delta > 0$ st if $x \in A$, then $|f(x)-L| < \varepsilon$ when $|x-c| < \delta$.
+	\item $\forall (x_n) \in A$ st $x_n \not= c, \forall n \in \mathbb{N}$, $\lim(f(x_n)) = L$ when $\lim(x_n) = c$.
+\end{itemize}
+
+$f(x)$ is bounded on $V_r(c)$ if $\exists V_\delta(c)$ and $M > 0$ st $|f(x)| \leq M \; \forall x \in A \cap V_\delta(s)$. Hence it follows that if $f$ has a limit at $c$ (cluster point), then it is bounded on some neighbourhood of that $c$.
+
+\subsection{Continuity}
+
+$f: A=[a,b] \rightarrow \mathbb{R}$ is continuous at $c$ (cluster point) if and only if either of the following hold
+\begin{itemize}
+	\item $\forall \; V_\varepsilon (f(c)), \exists V_\delta(c)$ st if $x \in V_\delta(c) \cap A$, then $f(x) \in V_\varepsilon(f(c))$, i.e. $f(A\cap V_\delta(c)) \subseteq V_\varepsilon (f(c))$.
+	\item Sequential criteria: If $\forall (x_n) \in A$ st $x_n \rightarrow c$, $f(x_n) \rightarrow f(c)$.
+	\item $j_f(c) = 0$ where $j_f(c) = \lim\limits_{x \rightarrow c^+} f(x) - \lim\limits_{x \rightarrow c^-} f(x)$ is a jump of a function where
+		\subitem - $\lim\limits_{x \rightarrow c^-} f(x) = \sup \{f(x): x \in (a,c)\}$ 
+		\subitem - $\lim\limits_{x \rightarrow c^+} f(x) = \inf \{f(x): x \in (c,b)\}$
+\end{itemize}
+
+Uniformity: Let $f: A \rightarrow \mathbb{R}$ and $u,v \in A$, then $f$ is 
+\begin{itemize}
+	\item Uniform continuous: $\forall \varepsilon > 0, \exists \delta > 0$ st $|f(u) - f(v)| \leq \varepsilon$ when $|u-v|<\delta$
+	\item Uniform discontinuous: $(x_n), (u_n) \in A$ st $(x_n), (u_n) \rightarrow 0$ and $\lim |f(x_n) - f(u_n)| \not\rightarrow 0$
+\end{itemize}
+ 
+ \subsection{Calculus}
+
+$f'(c)$ is derivative of $f(x)$ at $x=c$ if $\forall \varepsilon > 0, \exists \delta > 0$ st $\left|\frac{f(x)-f(c)}{x-c} - f'(c) \right|< \varepsilon$ when $|x-c| < \delta$.
+
+If $f: I = [a,b] \rightarrow \mathbb{R}$ has a derivative at $x=c$, then it is continuous at $c$.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{2}\selectfont]
+	Let $f$ be differentiable on $c \in I$, then $f'(c) = \lim\limits_{x \rightarrow c} \frac{f(x) - f(c)}{x-c}$ exists. \\	
+	Let $x \not= c, \forall x \in I$ and consider $f(x) - f(c)$ \\
+	$= f(x) - f(c) = \frac{f(x)-f(c)}{x-c}(x-c)$ \\	
+	Applying limits, $\lim\limits_{x\rightarrow c} (f(x) - f(c)) = \lim\limits_{x\rightarrow c} (\frac{f(x)-f(c)}{x-c}(x-c))$ \\	
+	$\Rightarrow \lim f(x) - \lim f(c) = \lim (\frac{f(x)-f(c)}{x-c}) \lim (x-c)$ \\
+	$\because \lim (\frac{f(x)-f(c)}{x-c})$ exists and $\lim (x-c) = 0 \therefore \lim f(x) - \lim f(c) = 0$ \\
+	$\lim f(x) = \lim f(c)$.
+	Hence $f(x)$ is continuous at $c$
+\end{tcolorbox}
+
+Caratheodory theorem: if $f:I \rightarrow \mathbb{R}$  and $c \in I$, then $f$ is differentiable at $c$ if and only if $\exists \; \phi(x): I \rightarrow \mathbb{R}$ continuous at $c$ and satisfies the equation $f(x) - f(c) = \phi(x)(x-c)$
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	$(\Rightarrow)$ Let $\phi(x) = \begin{cases} f(x) - f(c) & x \not= c \\ f'(c) & x = c \end{cases}$ \\	
+	Verifying continuity at $x=c$, \\
+	$\lim\limits_{x \rightarrow c} \phi(x) = \lim\limits_{x \rightarrow c} \frac{f(x) - f(c)}{x-c} = f'(c) = \phi(c)$ \\
+	Verifying if $\phi(x)$ satisfies the equation, \\	
+	if $x=c$, then $f(c) - f(c) = f'(c)(c-c) \Rightarrow 0=0$ \\	
+	if $x\not=c$, then $f(x)-f(c) = \frac{f(x)-f(c)}{x-c}(x-c) \Rightarrow 0 = 0$ \\
+	$(\Leftarrow) \exists \; \phi(x): I \rightarrow \mathbb{R}$ continuous at $c$ and satisfies the equation $f(x) - f(c) = \phi(x)(x-c)$. We have to show $f'(c)$ exists. \\
+	$f'(c) = \lim\limits_{x \rightarrow c} \frac{f(x) - f(c)}{x-c} = \lim \phi(x) = \phi(c) = f'(c)$
+\end{tcolorbox}
+
+Chain rule: Let $I,J \subseteq \mathbb{R}$ st $g: I \rightarrow \mathbb{R}$ and $f: J \rightarrow \mathbb{R}$ st $f(J) \subseteq I$ and $c \in J$, then $(g\cdot f)'(c) = g(f(c)) \cdot f'(c)$
+
+Rolle's Theorem: Let $f:[a,b] \rightarrow \mathbb{R}$ be continuous on $[a,b]$ and differentiable on $(a,b)$ st $f(a) = f(b) = 0$, then $\exists$ at least one point $x \in (a,b)$ st $f'(c) = 0$
+
+Mean Value Theorem: $f: I \rightarrow \mathbb{R}$ continuous on $[a,b]$ and differentiable on $(a,b)$, then $\exists c \in (a,b)$ st $f(b) - f(a) = f'(c)(b-a)$
+
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Consider the straight line joining $(a,f(a))$ and $(b,f(b))$, i.e. \\
+	$(y-y_1)=m(x-x_1)$ where $m = \frac{f(b) - f(a)}{b-a}$ \\	
+	$\Rightarrow y - f(a) = \frac{f(b) - f(a)}{b-a} (x-a)$ \\
+	$\Rightarrow y = f(a) + \frac{f(b) - f(a)}{b-a} (x-a)$ \\	
+	Let $\phi(x) = f(x) - y$. Since $f(x), y$ are continuous and differentiable, then $\phi(x)$ is continuous and differentiable on their respective intervals. \\
+	$\phi(x) = f(x) - f(a) - \frac{f(b)-f(a)}{b-a}(x-a)$ \\	
+	Since $\phi(a) = \phi(b) = 0$, therefore we can apply Rolle's theorem, i.e $\phi'(c) = 0$. Evaluating, \\	
+	$\phi'(c) = f'(c) - 0 - \frac{f(b)-f(a)}{b-a} = 0$ \\	
+	$f(b) - f(a) = f'(c)(b-a)$
+\end{tcolorbox}
+
+Taylor Series: Let $f:I \rightarrow \mathbb{R}$ be a function on $I=[a,b]$ st $f^{(n)}, \forall n \in \mathbb{N}$ are continuous on $I$ and $f^{(n+1)},$ exists on $(a,b)$. If $x_0 \in I$, then $\forall x \in I, \exists c \in (x,x_0)$ st $f(x) = P(x) + R_2(x)$ where 
+$$P(x) = f(x_0) + \dots + \frac{f^{(n)}(x_0)(x-x_0)^n}{n!}$$ and $$R_2(x) = \frac{f^{(n)}(c)(x-x_0)^{n+1}}{(n+1)!}$$
+
+\end{document}

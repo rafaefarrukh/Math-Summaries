@@ -1,0 +1,560 @@
+\documentclass{article}
+
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{parskip}
+\usepackage[most]{tcolorbox}
+
+\title{MATH 311: Topology and Metric Spaces}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\break
+
+\section{Metric Spaces}
+
+$(X,d)$ is a metric space if $X \not= \phi$ and $d: X \rightarrow \mathbb{R}$ is a metric satisfying the following axioms $\forall$ $x,y,z \in X$:
+
+\begin{itemize}
+	\item[$M_1$] $d(x,y) \geq 0$
+	\item[$M_2$] $d(x,y) = 0 \iff x=y$
+	\item[$M_3$] $d(x,y) = d(y,x)$
+	\item[$M_4$] $d(x,z) \leq d(x,y) + d(y,z)$ (triangle inequality)
+\end{itemize}
+
+Common metric spaces include:
+\begin{itemize}
+	\item $(\mathbb{R}, d_1)$ with absolute/usual distance, i.e. $d_1(x,y) = |x - y|$
+	\item $(\mathbb{R}^n, d_n)$ with euclidean distance, i.e. $d_n(\underline{x},\underline{y}) = \sqrt{\sum_{i=1}^{n} (x_i-y_i)^n}$
+	\item $(\mathbb{R}^n, d_p)$ with postal distance, i.e. $d_p(\underline{x},\underline{y}) = \sum_{i=1}^{n} |x_i-y_i|$
+	\item $(\mathbb{R}^n, d_{max})$ with Chebyshev distance, i.e. $d_{max}(\underline{x},\underline{y}) = \max\{|x_i-y_i|\}$
+	\item $(X, d_d)$ with discrete distance, i.e. $d_d(x,y) = \begin{cases} 0 & x=y \\ 1 & x\not= y \end{cases}$
+\end{itemize}
+
+\subsection{Neighbourhood}
+
+A $r$-neighbourhood (also known as a open ball) is a set st $N_r(a;d) = \{x \in X: d(x,a) < r\}$ where $r > 0$. The shape of $r$-neighbourhoods varies depending on the metric space, for example: 
+\begin{itemize}
+	\item $N_r(a;d_1) = (a-r, a+r)$ (open interval)
+	\item $N_r(\underline{a};d_2) = (x_1-a_1)^2 + (x_2 - a_2)^2 < r^2$ (open circle)
+	\item $N_r(\underline{a};d_p) = |x_1-a_1| + |x_2-a_2| < r$ (open rhombus)
+	\item $N_r(\underline{a};d_{max}) = (a_1-r, a_1+r) \times (a_2-r, a_2+r)$ (open square)
+	\item $N_r(a, d_d) = \begin{cases} \{a\} & r \in (0,1] \\ X & r > 1 \end{cases}$
+\end{itemize}
+
+$N \subseteq X$ is a neighbourhood of a point $a$ if $\exists \, N_r(a) \subseteq N$. For a collection of all neighbourhoods of a point, $\aleph(a)$, the following properties hold:
+\begin{itemize}
+	\item $X \in \aleph(a)$
+	\item $N \in \aleph(a), N \subseteq M \Rightarrow M \in \aleph(a)$
+	\item $N_1, N_2 \in \aleph(a) \Rightarrow N_1 \cap N_2 \in \aleph(a)$
+	\item $N \in \aleph(a) \Rightarrow \exists \, L \in \aleph(b) \text{ st } N \in \aleph(x) \: \forall x \in L$
+\end{itemize}
+
+\subsection{Open Sets}
+
+If $(X,d)$ is a metric space, then $G \subseteq X$ is an open set $\iff$ $\forall x \in G, \exists \, N_r(x;d) \subseteq G$. The following properties hold for open sets:
+\begin{itemize}
+	\item $X, \phi$ are open.
+	\item If $\{G_i: i \in I\}$ is collection of open sets, then $\cup G_{i \in I}$ is open.
+	\item If $G_i,  G_j$ are open sets, then $G_i \cap G_j$ is open.
+\end{itemize}
+
+\subsection{Continuity}
+
+A function $f:(X,d_x) \rightarrow (Y,d_y)$ is continuous at $x=a \in X \iff \forall \varepsilon > 0, \exists \, \delta > 0$ st $f(N_\delta(a)) \subseteq N_\varepsilon(f(a))$.
+
+\subsection{Complete Metric Spaces}
+
+A metric space $(X,d)$ is complete if and only if every cauchy sequence in $X$ is convergent in $X$.
+
+A sequence $(x_n: n \in \mathbb{N})$ in a metric space $(X,d)$ is cauchy if and only if $\forall \varepsilon > 0, \exists \, k(\varepsilon) \in \mathbb{N}$ st $d(x_n, x_m) < \varepsilon \; \forall n,m \geq k(\varepsilon)$.
+
+A sequence $(x_n: n \in \mathbb{N})$ in a metric space $(X, d)$ converges to $b \in X$ if and only if $\forall \varepsilon > 0, \exists \, n(\varepsilon) \in \mathbb{N}$ st $x_n \in N_r(b;d) \; \forall n \geq n(k)$. 
+
+\textbf{Theorem:} $\mathbb{R}$  with usual metric is complete.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.75}\selectfont]
+	Let $(x_n)$ be a cauchy sequence in $\mathbb{R}$, then we need to show that it converges in $\mathbb{R}$. \\
+	Let $S_m = \cup \{x_n : n \geq m\}$ \\
+	$\because (x_n)$ is bounded $\therefore (S_m)$ is bounded $\Rightarrow \sup(S_m) = t_m$ \\
+	$\because S_{m+1} \subseteq S_m \therefore t_{m+1} \leq t_m$ \\
+	$\Rightarrow (t_m)$ is a decreasing sequence st $\lim\limits_{m \rightarrow \infty} (t_m) = b$ \\
+	Now, we need to only show that $\lim\limits_{n \rightarrow \infty} (x_n) = b$ \\
+	$\because (x_n)$ is cauchy $\therefore \forall \varepsilon > 0, \exists \, n_0 \in \mathbb{N}$ st $|x_n - x_m| < \varepsilon \; \forall n,m \geq n_0$ \\
+	$\because \lim\limits_{m \rightarrow \infty} (t_m) = b \therefore \forall \varepsilon > 0, \exists m_0 \in \mathbb{N}$ st $|t_m-b| < \varepsilon \; \forall m \geq m_0$ \\
+	Let $N = \max \{m_0, n_0\}$, then $t_N - \varepsilon$ is not an upper bound of $S_N$ \\
+	$\Rightarrow \forall \varepsilon > 0, \exists \, M \geq N$ st $t_N - \varepsilon < x_M \leq t_N < t_N + \varepsilon \Rightarrow |t_n-x_m| < \varepsilon$ \\
+	$\Rightarrow \forall n \geq N, |x_n-b| = |x_N-b + (x_M-x_M) + (t_N-t_N)| \leq |x_N-x_M| + |x_M-t_N|+|t_N-b| < 3\varepsilon$ \\
+	$\rightarrow  \forall n \geq N, |x_n-b| < 3\varepsilon$ \\
+	$\Rightarrow \lim\limits_{n \rightarrow \infty} (x_n) \rightarrow b \in \mathbb{R}$ \\
+	$\because$ all cauchy sequences in $\mathbb{R}$ converge in $\mathbb{R} \therefore \mathbb{R}$ is complete
+\end{tcolorbox}
+
+From this theorem, several properties can be derived, including:
+\begin{itemize}
+	\item Every closed interval in $\mathbb{R}$ is complete.
+	\item Let $A \not= \phi$ be a subset of a metric space. Then $z \in \bar{A} \iff \exists \,  (x_n) \rightarrow z$ in $A$.
+	\item A subset of a metric space $A$ is closed $\iff$ all convergent sequence in $A$ converge in $A$.
+	\item All cauchy sequences in a metric space are convergent but the converse need not be true.
+\end{itemize}
+
+\textbf{Theorem:} Let $(X,d)$ be a metric space, then if a subspace $A$ is complete, then it is closed in $X$.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $(X,d)$ be a metric space and $A$ a complete subspace, then we need to show $A$ is closed, i.e. $A = \bar{A}$ but $\because A \subseteq \bar{A} \therefore$ we only need to show that $\bar{A} \subseteq A$ \\
+	Let $x \in \bar{A}$ \\
+	$\because X$ is a metric space $\therefore \exists (x_n) \rightarrow x$ in $A$ \\
+	$ \Rightarrow (x_n)$ is cauchy \\
+	$\because A$ is complete $\therefore x \in A$ \\
+	$\Rightarrow \bar{A} \subseteq A$ \\
+	Hence $A$ is closed in $X$
+\end{tcolorbox}
+
+\textbf{Theorem:} If $(X,d)$ is a complete metric space, then any closed subset $B \subseteq X$ is also complete.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $(x_n)$ be a cauchy sequence in $B$ \\
+	$\Rightarrow (x_n)$ is cauchy in $X$ and $\lim (x_n) = x \in X$ \\
+	$\because B$ is closed $\therefore x \in B$ \\
+	$\Rightarrow$ every cauchy sequence in $B$ converges in $B$ \\
+	Hence $B$ is complete
+\end{tcolorbox}
+
+Let $A \not= \phi$ is a subset of a metric space $(X,d)$ and $z \in X$. Then $z \in \bar{A}$ if and only if $\exists \, (x_n)$ in $A$ st $\lim (x_n) = z$.
+
+\section{Topology}
+
+$(X, \tau)$ is a topological space if $X \not= \phi$ and $\tau$ is a collection of open subsets of $X$ st
+\begin{itemize}
+	\item[$T_1$] $X, \phi \in \tau$
+	\item[$T_2$] $\{A_i: i \in I\} \subseteq \tau \Rightarrow \cup \cup_{i \in I} A_i \in \tau$
+	\item[$T_3$] $A_i, A_j \in \tau \Rightarrow A_i \cap A_j \in \tau$
+\end{itemize}
+
+If a metric space is used to form $\tau$, then the topological space is said to be induced by that metric space. Hence every metric space defines a topological space, but the converse need not be true. Common topologies include:
+\begin{itemize}
+	\item Usual topology, $\tau$ contains all neighbourhoods of that metric space
+	\item Trivial topology, $\tau = \{\phi, X\}$
+	\item Discrete topology, $\tau = P(X)$
+	\item Cofinite topology, $\tau = \{G: |G^c| \in \mathbb{R}\}$
+\end{itemize}
+
+\textbf{Comparing topologies:} For topologies $\tau_1$ and $\tau_2$, only one of the following relations hold:
+\begin{itemize}
+	\item $\tau_1 \leq \tau_2$ (coarser/weaker/smaller), i.e. $\forall \; x \in \tau_1, x \in \tau_2$
+	\item $\tau_1 \geq \tau_2$ (finer/stronger/larger), i.e. $\forall \; x \in \tau_2, x \in \tau_1$
+	\item $\tau_1 = \tau_2$, i.e. $\tau_1 \leq \tau_2$ and $\tau_1 \geq \tau_2$
+	\item $\tau_1 \parallel \tau_2$ (non-comparable), i.e. $\tau_1 \not\leq \tau_2$ and $\tau_1 \not\geq \tau_2$	
+\end{itemize}
+For a set $X$, the trivial topology is weakest topology while the discrete topology is the strongest topology that can be defined.
+
+If $x \in G \subseteq N$ - for some $G \in \tau$ and $N \in X$ - then $N$ is a \textbf{neighbourhood} of $\tau$. Hence it follows that every open set is a neighbourhood of each of its point. The \textbf{system of a point} is the collection of all neighbourhoods of a point, i.e. $\aleph(x) = \{N \subseteq X: x \in G \subseteq N\}$. \\
+
+$B \subseteq \tau$ is a \textbf{basis} of $\tau$ if and only if $\forall x \in G$ and $\forall G \in \tau, \; \exists \; B_x \in B$ st $x \in B_x \subseteq G$.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	$(\Rightarrow)$ Suppose $B$ is a basis of $\tau$. \\
+	Let $G \in \tau$, then $G = \cup_{\alpha \in I}B_\alpha$ st $B_\alpha \subseteq B$. \\
+	Let $x \in G$, then $x \in V_\alpha$ for some $B_\alpha \subseteq B$. \\
+	$\Rightarrow B_\alpha \subseteq G$. \\\\
+	$(\Leftarrow)$ Suppose $\forall$ $x \in G$ $\forall$ $G \in \tau$, $\exists$ $B_x \in B$ st $x \in B_x \subset G$, then we need to show that $\forall G \in \tau$ may be expressed as a union of sub-collections of $B$. \\
+	The statement implies $\cup_{x\ in G} \{x\} \in \cup_{x \in G} \{B_x\} \subseteq G$ \\
+	$\Rightarrow G  \subseteq \cup_{x \in G} \{B_x\} \subseteq G$ \\
+	$\Rightarrow G = \cup_{x \in G} \{B_x\}$
+\end{tcolorbox}
+If $\tau_1, \tau_2$ be topologies on $X$ st $B_1$ is basis for $\tau_1$. If $B_1 \subseteq \tau_2$, then $\tau_1 \leq \tau_2$.  
+
+A collection of open sets is a \textbf{sub-basis} if the finite intersection of its elements forms a basis for $\tau$.
+
+If $A \subseteq X$, then $(A, \tau_A)$ is a \textbf{subspace} st $\tau_A = \{A \cap G: G \in \tau\}$. Similarly, if $B$ is a basis for $\tau$, then $B \cap A$ is a basis for $\tau_A$.
+
+Let $A \subseteq X$ and $x \in X$. Then $x$ is a \textbf{limit point} of $A$ if $\forall G \in \tau$ st $x \in G$, $(G\backslash\{x\}) \cap A \not= \phi$. The \textbf{derived set} $A'$ contains all limit points of $A$. The \textbf{closure} of a set, $\bar{A} = A \cup A' = \{G \in \tau: A \cap G \not= \phi\}$. Important properties of closure include: 
+\begin{itemize}
+	\item $A\subseteq X$ is dense if $\bar{A} = X$, e.g. $\mathbb{Q}$ is dense in $\mathbb{R}$
+	\item $A \subseteq B \Rightarrow \bar{A} \subseteq \bar{B}$
+	\item $\bar{A} = \bar{\bar{A}}$
+	\item In discrete topology, $A = \bar{A}, \; \forall A \subseteq X$
+	\item In trivial topology, $\bar{A} = X, \; \forall A \subseteq X$
+\end{itemize}
+
+\subsection{Closed Sets}
+
+There are several methods to define a closed set, including the following:
+\begin{itemize}
+	\item $F \subseteq X$ is closed if and only if $F^c$ is open.
+	\item $F \subseteq X$ is closed if and only if it contains all of its limits points, ie. $F' \subseteq F$.
+	\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+		$(\Rightarrow)$ Let $F$ be closed and suppose $x \in F'$ st $x \not\in F$ \\
+		$\Rightarrow x \in F^c$ \\
+		$\because F^c$ is open $\therefore F^c\backslash\{x\}\cap F = \phi$ which is a contradiction \\
+		$\Rightarrow x \in F$ \\
+		$\Rightarrow F' \subseteq F$ \\\\
+		$(\Leftarrow)$ Suppose $F' \subseteq F$. \\
+		Let $x \not\in F$, then $\exists \, G_x$ st $G_x \cap F = \phi$. \\
+		$\Rightarrow \cup_{x\in F^c} \{G_x\} = F^c$ is open $\because G_x$ is open and arbitrary unions of open sets is open. \\
+		$\Rightarrow (F^c)^c = F$ is closed.
+	\end{tcolorbox}
+	\item $F \subseteq X$ is closed if and only if $\bar{F} = F$.
+	\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+		$(\Rightarrow)$ Suppose $\bar{F} = F$. Since $F \subseteq \bar{F}$, we only need to show that $\bar{F} =\subseteq F$, i.e. $F^c \subseteq \bar{F}^c$ \\
+		let $x \in F^c$ \\
+		$\because F \cap F^c = \phi \therefore x \not\in \bar{F}$  \\
+		$\Rightarrow x \in \bar{F^c}$ \\
+		$\Rightarrow F^c \subseteq \bar{F}^c$ \\\\
+		$(\Leftarrow)$ Suppose $F^c \subseteq \bar{F^c}$. \\
+		Let $x \in F^c \Rightarrow x \in \bar{F^c} \Rightarrow x \not\in \bar{F}$. \\
+		$\exists \, G_x \in \tau$ st $F\cap G = \phi$. \\
+		$\Rightarrow \cup_{x\in F^c}G_x = F^c$ is open $\because G_x$ is open and arbitrary unions of open sets is open. \\
+		$\Rightarrow (F^c)^c = F$ is closed.
+	\end{tcolorbox}
+\end{itemize}
+
+Closed sets have numerous important properties, including:
+\begin{itemize}
+	\item $X, \phi$ are closed.
+	\item If $\{G_i: i \in I\}$ is collection of closed sets, then $\cap G_{i \in I}$ is closed.
+	\item If $G_i,  G_j$ are closed sets, then $G_i \cup G_j$ is closed.
+	\item $\bar{A}$ is closed.
+	\item If $A \subseteq B \subseteq \bar{A}$ and $B$ is closed, then $B = \bar{A}$.
+\end{itemize}
+
+A set is \textbf{clopen} if it is both open and closed  (eg. $\phi, X$). 
+
+\subsection{Boundary}
+
+If $A \subseteq X$, then 
+\begin{itemize}
+	\item Interior, $Int(A) = \{x \in A: x \in G \subseteq A\}$ for some $G \in \tau$.
+	\item Exterior, $Ext(A) = \{x \in A^c: x \in G \subseteq A^c\}$ for some $G \in \tau$.
+	\item Boundary, $Fr(A) = \{x \in X: G \cap A \not= \phi \wedge G \cap A^c \not= \phi \; \forall G \in \tau \text{ st } x \in G\}$.
+\end{itemize}
+
+Important properties include:
+\begin{itemize}
+	\item $A \subseteq B \iff Int(A) \subseteq Int(B)$,
+	\item $Int(A)$ and $Ext(A)$ are the largest open subsets of $A$ and $X\backslash A$ respectively,
+	\item $A$ is open $\iff Int(A) = A$
+	\item $Ext(A) = Int(A^c)$ and $Int(A) = Ext(A^c)$
+	\item $Int(A) \cap Ext(A) = \phi$
+\end{itemize}
+
+\subsection{Continuity}
+
+A function $f: X \rightarrow Y$ is continuous at $x \in X$ if and only if
+$$\forall H \in \tau_Y \text{ st } f(x) \in H \subseteq Y, \; \exists G \in \tau_X \text{ st } x \in G \text{ and } f(G) \subseteq H$$
+
+A function is continuous overall if $\forall H \in Y, \exists f^{-1}(H) \in \tau_x$. Examples include: 
+\begin{itemize}
+	\item $f(G) = a \in \mathbb{R} \; \forall G \in \tau_X$
+	\item $f: (X, P(X)) \rightarrow (Y, \tau)$
+	\item $f: X \rightarrow (Y, \{Y, \phi\})$
+	\item If $f: X \rightarrow Y$ is continuous, then $f^{-1}(Int(A)) \subseteq Int(f^{-1}(A))$ where $A \subseteq Y$
+	\item If $f$ is an identity function, then $\tau_2 \leq \tau_1 \iff f(x)$ is continuous
+\end{itemize}
+
+\textbf{Theorem:} Let $X,Y,Z$ be topological spaces st $g:X \rightarrow Y$ and $f:Y \rightarrow Z$ are continuous functions. Then $f \circ g: X \rightarrow Z$ is a continuous function.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	We must show that $(f \circ g)^{-1}(H) \in \tau_X \; \forall H \in \tau_Z$ \\
+	Let $H \in \tau_Z$ \\
+	$\Rightarrow f^{-1}(H) \in \tau_Y \; \because f$ is continuous \\
+	$\Rightarrow g^{-1}(f^{-1}(H)) \in \tau_X \; \because g$ is continuous \\
+	$\Rightarrow (g^{-1} \circ f^{-1})(H) \in \tau_X$ \\
+	$(f \circ g)^{-1}(H) \in \tau_X$
+\end{tcolorbox}
+
+\textbf{Theorem:} $f: X \rightarrow Y$ is continuous if and only if $\forall$ closed subsets $F \subseteq Y$, $f^{-1}(F)$ is closed in $X$, i.e. $(f^{-1}(F))^c \in \tau_X \; \forall F^c \in \tau_Y$
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	$(\Rightarrow)$ Let $f$ be a continuous function and $F^c \in \tau_Y$, then we have to show $(f^{-1}(F))^c \in \tau_X $ \\	
+	$\because F^c \in \tau_Y \therefore f^{-1}(F^c) \in \tau_X \because f$ is continuous \\
+	$\Rightarrow (f^{-1}(F))^c \in \tau_X \because f^{-1}(F^c) = f^{-1}(Y \backslash F) = f^{-1}(Y) \backslash f^{-1}(F) = X \backslash f^{-1}(F) = (f^{-1}(F))^c$ \\	
+	$\Rightarrow f^{-1}(F)$ is closed in $X$ \\	
+	$\Rightarrow (f^{-1}(F))^c \in \tau_X$ \\\\	
+	$(\Leftarrow)$ Let $(f^{-1}(F))^c \in \tau_X , \; \forall F^c \in \tau_Y$, then we have to show that $f^{-1}(F^c) \in \tau_X, \; \forall F^c \in \tau_Y$ \\
+	$\because (f^{-1}(F))^c \in \tau_X \therefore f^{-1}(F^c) \in \tau_X, \; \forall F^c \in \tau_Y$ \\	
+	Hence $f$ is continuous.
+\end{tcolorbox}
+
+\textbf{Theorem:} Let $(X, \tau_X)$ and $(Y, \tau_Y)$ be topological spaces and $B$ a basis for $\tau_Y$. Then a function $f: X \rightarrow Y$ is continuous if and only if $f^{-1}(\beta) \in \tau_X \; \forall \beta \in B$
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	$(\Rightarrow)$ Let $f$ be a continuous function, then we have to show that $f^{-1}(\beta) \in \tau_X \; \forall \beta \in B$ \\
+	Let $H \in \tau_Y$, then $f^{-1}(H) \in \tau_X \because f$ is continuous \\
+	$\Rightarrow f^{-1}(\cup_{\beta \in B} \beta) \in \tau_X \because \forall G \in \tau_x$ and $B$ is a basis for $\tau_X$ \\
+	$\Rightarrow \cup_{\beta \in B} f^{-1} (\beta) \in \tau_X$ \\
+	$f^{-1}(\beta) \in \tau_X, \; \forall \beta \in B$ \\\\
+	$(\Leftarrow)$ Let $f^{-1}(\beta) \in \tau_X, \; \forall \beta \in B$, then we have to show that $f^{-1} (H) \in \tau_X, \; \forall H \in \tau_Y$ \\	
+	Let $f^{-1}(H) = f^{-1}(\cup_{\beta \in B} \beta)$ for some arbitrary $H \in \tau_Y$ \\
+	$\Rightarrow f^{-1}(H) = \cup_{\beta \in B} f^{-1} (\beta) \in \tau_X$ \\	
+	$\Rightarrow f^{-1}(H) \in \tau_X$ \\	
+	Hence $f$ is continuous
+\end{tcolorbox}
+
+A \textbf{homeomorphism} is a special type of function $f$ st $f$ is bijective and $f, f^{-1}$ are continuous. If $f: X \leftrightarrow Y$ is a homeomorphism, then the two spaces are said to be \textbf{homeomorphic}, i.e. $X \cong Y$. Examples: In usual topology, $[0,1] \cong [a,b]$ and $(0,1) \cong (a,b)$
+
+\section{Topological Spaces}
+
+While there are infinite topological spaces, they can be categorized based on certain properties. Here we discuss some of the most important types of spaces.
+
+\subsection{Product Spaces}
+
+If $(X, \tau_X)$ and $(Y_X, \tau_X)$ are topological spaces, then $(X \times Y, \tau_{X \times Y})$ is their product space. The basis for the smallest product topology can be determined by taking all cartesian products of open sets of both spaces, i.e. $B = \{G \times H: G \in \tau_X, H \in \tau_Y\}$. Similarly, the sub-basis for the smallest product topology is $S = \{\pi_X^{-1}(G), \pi_Y^{-1}(H): G \in \tau_X, H \in \tau_Y\}$ where $\pi_X: X \times Y \rightarrow X$ and $\pi_Y: X \times Y \rightarrow Y$ are continuous projections.
+
+\subsection{Quotient Spaces}
+
+Suppose $(X, \tau_X)$ is a topological space and let $\{A_k:k \in K\}$ be a collection of disjoint subsets. Then $(\phantom{}^X / \phantom{}_{A_k}, \phantom{}^{\tau_X} / \phantom{}_{\{A_k\}})$ is a quotient space where $\phantom{}^X / \phantom{}_{A_k}$ is the image set of $p$ and $p^{-1}(H) \in \tau_X \; \forall H \in \tau_X / \{A_k\}$ where $p$ is a mapping, i.e.
+$$p(x) = \begin{cases} x & x \not\in \cup_{k \in K} A_k \\ a_k & x \in A_k\end{cases}$$
+
+\subsection{Compact Spaces}
+
+A collection of open sets $G = \{G_i: i \in I\}$ is an open cover of $A \iff A \subseteq \cup G$. A topological space is compact if and only if every open cover of $A$ has a finite sub-covering.
+
+\textbf{Theorem:} Let $f: X \rightarrow Y$ is continuous if $X$ is compact, $f(X)$ is compact.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Suppose $U = \{G_i\}$ is an open cover of $f(X)$ \\
+	$\because f$ is continuous $\therefore f^{-1}(U) \subseteq \tau_X$ \\
+	$\Rightarrow \{f^{-1}(G_i): G_i \in U\} \subseteq \tau_X$ is an open covering of $X$ \\
+	$\because X$ is compact $\therefore$ a finite subcollection $\{f^{-1}(G_i): G_i \in U, i \in \{1,2,\dots,n\}\}$ will cover $X$ \\
+	$\Rightarrow \{G_i: i \in \{1,2,\dots,n\}\}$ covers $f(X)$ \\
+	Hence $f(X)$ is compact
+\end{tcolorbox}
+It follows that if $X \cong Y$, then $X$ is compact $\iff Y$ is compact
+
+\textbf{Theorem:} Every closed subset of a compact space is compact.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $X$ be a compact space and $F \subseteq X$ a closed subset \\
+	Suppose $F \subseteq G = \cup \{G_i: G_i \in \tau\}$ \\
+	$\because F$ is closed $\therefore F^c$ is open \\
+	$\Rightarrow G \cup F^c$ is an open cover of $X$ \\
+	$\because X$ is compact $\therefore$ a finite subcollection covers $X$ \\
+	$\because F \not\subseteq F^c \therefore F$ must be covered by a finite subcollection of $G$ \\
+	$\Rightarrow F \subseteq \cup \{G_i: i \in \{1,2,\dots,n\}\}$ \\
+	Hence $F$ is compact
+	
+\end{tcolorbox}
+
+\textbf{Theorem:} Every compact subset of a T2 space is closed.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Suppose $A$ is a compact subset of a T2 space $X$. Then we need to show $A$ is closed, i.e. $A^c \in \tau$ \\
+	Hence it is sufficient to show that $\forall x \in A^c, \exists \, G_x \in \tau$ st $x \in G_x \subseteq A^c$ \\
+	Let $x \in A^c$ and $\{y\} \subseteq A$ \\
+	$\because X$ is T2 $\therefore \forall y \in A, \exists \, G_{xy}, H_{xy} \in \tau$ which are disjoint and contain $x,y$ respectively \\
+	$\Rightarrow \{H_{xy}: y \in A\}$ covers $A$ \\
+	$\because A$ is compact $\therefore A \subseteq H_x = \cup \{H_{xyi}: i \in \{1,2,\dots,n\}\}$ \\
+	$\Rightarrow$ the intersection of the corresponding sets $G_x = \cap \{G_{xyi}\}$ is open \\
+	$\because H_x \cap G_x = \phi \therefore G_x \cap A = \phi$ \\
+	$\Rightarrow \forall x \in A^c, \exists \, G_x \in \tau$ st $x \in G_x \subseteq A^c$ \\
+	$A$ is closed
+\end{tcolorbox}
+In a compact T2 space, a subset is compact if and only if it closed
+
+\textbf{Theorem:} If $f: X \leftrightarrow Y$ is a continuous bijection from compact $X$ to T2 $Y$, then $f$ is a homeomorphism.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	$\because f$ is bijective and continuous $\therefore$ we only need to show $f^{-1}$ is continuous \\
+	$\because f$ is continuous if and only if $\forall$ closed sets $F$ of $Y$, $f^{-1}(F)$ is closed in $X$ \\
+	$\therefore$ we only need to show that $\forall$ closed sets $(f^{-1})^{-1}(F) = f(F)$ in $Y$ are closed \\
+	Let $F \subseteq X$ be closed, then $F$ is compact $\because$ every closed subset of a compact space is compact \\
+	$\Rightarrow f(F)$ is compact $\because$ compactness is preserved under continuous functions \\
+	$\Rightarrow f(F)$ is closed $\because Y$ is T2 and every compact subset of a T2 space is closed \\
+	Hence $f$ is a homeomorphism
+\end{tcolorbox}
+
+A topological basis is compact if and only if for all basis $B$, every open cover of $X$ by $B$ contains a finite sub-covering.
+
+\textbf{Theorem:} If $Y_1$, $Y_2$ are topological spaces, then $Y_1 \times Y_2$ with product topology is compact if and only if $Y_1$ and $Y_2$ are compact.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	$(\Rightarrow)$ Suppose $(Y_1, \tau_1)$ and $(Y_2, \tau_2)$ are compact topological spaces with product topology $Y_1 \times Y_2$ \\
+	$\Rightarrow \pi_1(Y_1 \times Y_2)$ and $\pi_2(Y_1 \times Y_2)$ are compact $\because$ compactness is preserved under continuous maps \\
+	$\because \pi_1, \pi_2$ are continuous under product topology $\therefore \pi_1(Y_1 \times Y_2) = Y_1$ and $\pi_2(Y_1 \times Y_2) = Y_2$ \\
+	$\Rightarrow Y_1, Y_2$ are compact \\\\
+	$(\Leftarrow)$ We need to show that for all open covers of $Y_1 \times Y_2$, say $U$, by members of basis $B$ have a finite sub-covering. \\
+	Let $B = \{G \times H: G \in \tau_{Y1}, H \in \tau_{Y2}\}$ \\
+	$\forall x \in Y_1, \exists$ a subcollection of $U$ which covers $\{x\} \times Y_2$ \\
+	$\because \{x\} \times Y_2 \cong Y_2 \therefore \{x\} \times Y_2$ is compact \\
+	Let $G_x = \cap \{G_i \times H_i: i \in \{1,2,\dots,n\}\}$ be the intersection of the finite sub-covering of $\{x\} \times Y_2$ \\
+	$\Rightarrow G_x \times Y_2$ is an open subset of $Y_1 \times Y_2$ containing $\{x\} \times Y_2$ \\
+	$\Rightarrow G_x \times Y_2$ is covered by the same subcollection as $\{x\} \times Y_2$ by definition \\
+	$\Rightarrow \{G_x \times Y_2: \forall x \in Y_1\}$ covers $Y_1 \times Y_2$ \\
+	$\because Y_1$ is compact $\therefore$ a finite subcollection $\{G_x: x \in Y_1\}$ covers $Y_1$ \\
+	$\Rightarrow$ a finite subcollection $\{G_x \times Y_2\}$ covers $Y_1 \times Y_2$ \\
+	$\because$ each $G_x \times Y_2$ is covered by a finite number of members of $U$ \\
+	Hence $Y_1 \times Y_2$ is compact
+\end{tcolorbox}
+
+\subsection{Connected Spaces}
+
+A topological space $(X, \tau)$ is connected if and only if $X$ is not the union of two non-empty disjoint open sets, i.e. 
+$$\forall G,H \in \tau, \; X \not= G \cup H \text{ and } G \cap H \not= \phi$$
+
+If $\phi, X$ are the only clopen sets in $\tau$, then $(X, \tau)$ is connected, as otherwise $X = A \cup A^c$. Examples include:
+\begin{itemize}
+	\item Trivial topological space is connected since $X$ does not contain any disjoint sets.
+	\item Discrete topological space is disconnected since $X = A \cup A^c$.
+	\item An infinite set with cofinite topology is connected.
+	\item $\mathbb{R}$ with usual topology is connected.
+\end{itemize}
+
+Important properties and results of connected spaces include:
+\begin{itemize}
+	\item If a set is connected, its subsets/subspaces need not be connected.
+	\item $X$ is connected if and only if there are no continuous functions from $X$ \textit{onto} a discrete space with two elements.
+	\item $X$ is connected if and only if every continuous function from $X$ \textit{into} a discrete space with two elements is constant.
+	\item If $X \cong Y$, then $X$ is connected if and only if $Y$ is connected.
+\end{itemize}
+
+\textbf{Theorem:} If $f$ is a continuous function from $X$ into $Y$ where $X$ is connected, then $f(X)$ is connected.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Suppose $f(X)$ is disconnected, then $\exists \, G,H \in \tau_Y$ st $G \cup H = f(X)$ and $G \cap H = \phi$. \\
+	$\because G,H \in \tau_Y \therefore f^{-1}(G), f^{-1}(H) \in \tau_X$ by continuity of $f$ \\
+	$f^{-1}(G) \cup f^{-1}(H) = f^{-1}(G \cup H) = f^{-1}(f(X)) = X$ \\
+	$f^{-1}(G) \cap f^{-1}(H) = f^{-1}(G \cap H) = f^{-1}(\phi) = \phi$ \\
+	$\Rightarrow X$ is disconnected which is a contradiction \\
+	Hence $f(X)$ is connected
+\end{tcolorbox}
+
+\textbf{Theorem:} Suppose that $\{A_i: i \in I\}$ is a family of connected subsets of topological space $X$ st $A_i \cap A_j \not= \phi \; \forall i,j \in I (i \not= J)$. Then $A = \cup \{A_i: i \in I\}$ is connected.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $f: A \rightarrow \{a,b\}$ be a continuous function from $A$ into $\{a,b\}$ with discrete topology \\
+	$\because A_i$ is connected $\therefore f$ can not map onto $\{a,b\}$, i.e $f(A_i) \not= \{a,b\}$ \\
+	$\because A_i$ is connected $\therefore f$ is constant. \\
+	Let $f(A_i) = a$\\
+	$\because A_i \cap A_j \not= \phi \therefore G \cap H  \not= \phi$ for some $G \in A_i$ and $H \in A_j$ \\
+	$\Rightarrow f(H) = f(G) = a$ \\
+	$\Rightarrow \forall i \in I, \; f(A_i) = a$ \\
+	Hence $A$ is connected
+\end{tcolorbox}
+It follows that if $\{A_i: i \in I\}$ is a family of connected subsets of a topological space $X$ and if there exists connected subset $B \subseteq X$ st $B \cap A_i \not= \phi$, then $B \cup (\cup_{i \in I}A_i)$ is connected.
+
+\textbf{Theorem:} The topological spaces $X$ and $Y$ are connected if and only if $X \times Y$ with the product topology is connected.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	$(\Rightarrow)$ Suppose $X,Y$ are connected, then we need to show $X \times Y$ is connected \\
+	Let $B = X \times \{y_0\}$ where $y_0 \in Y$. Then $B$ is connected $\because B \cong X$ \\
+	Let $C_x = \{x\} \times Y, \; \forall x \in X$. Then $C_x$ are connected $\because C_x \cong Y$ \\
+	$\because (x,y_0) \in B \cap C_x, \; \forall x \in X \therefore B \cap C_x \not= \phi$ \\
+	$\Rightarrow B\cup(\cup_{x \in X} C_x)$ is connected by common point criterion \\
+	$\because B\cup(\cup_{x \in X} C_x) \cong X \times Y \therefore X \times Y$ is connected \\\\
+	$(\Leftarrow)$ Suppose $X \times Y$ with product topology is connected, then $\because \pi_X(X \times Y) = X, \pi_Y(X \times Y) = Y$ and connectedness is preserved under continuous functions $\therefore X,Y$ are connected
+\end{tcolorbox}
+
+\section{Separation Axioms}
+
+While the exact definition various, these are generally used to distinguish between disjoint sets and distinct points. Stronger axioms correlate to a more "stricter" sense of separation which can be considered in terms of open and closed sets. The separation axioms are labelled as $T_i$ where $i \in \{0,1,2, 2\frac{1}{2}, 3, 3\frac{1}{2},4,5,6\}$ and a larger $i$ corresponds to stronger properties. Hence stronger axioms will satisfy the weaker axioms as well, i.e. $T4$ is $T3$ which is $T2$ which is $T1$.
+
+ \subsection{T1 - T4 Spaces}
+
+A space is \textbf{accessible/T1} if and only if all pairs of distinct points in $X$ are separated, i.e 
+$$\forall x,y \in X, \exists \, G_x,G_y \in \tau \text{ st } x \in G_x, x \not\in G_y \text{ and } y \in G_y, y \not\in G_x$$
+
+\textbf{Theorem:} A space is T1 id and only if all singletons are closed.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	$(\Rightarrow)$ Let $y \in \{x\}^c$ \\
+	$\because X$ is $T1 \therefore \exists \, G_x, G_y \in \tau$ st $x \in G_x, x \not\in G_y$ and $y \in G_y, y \not\in G_x$ \\
+	$\Rightarrow y \in G_y \subseteq \{x\}^c \because x \not\in G_y$ \\
+	$\Rightarrow \{y\} \subseteq G_y \subseteq \{x\}^c$ \\
+	$\Rightarrow \cup_{y \in \{x\}^c} \{y\} \subseteq \cup_{y \in \{x\}^c} G_y \subseteq \{x\}^c$ \\
+	$\Rightarrow \{x\}^c \subseteq \cup_{y \in \{x\}^c} G_y \subseteq \{x\}^c$ \\
+	$\Rightarrow \cup_{y \in \{x\}^c} G_y = \{x\}^c$ \\
+	$\because G_y \in \tau \therefore \{x\}^c \in \tau$ \\
+	Hence $\{x\}$ is closed	
+\end{tcolorbox}
+
+A space is \textbf{hausdorff/T2} if and only if all distinct points are separated by closed neighbourhoods, i.e. 
+$$\forall x,y \in X, \exists \, G_x, G_y \in \tau \text{ st } x \in G_x, y \in G_y \text{ and } G_x \cap G_y = \phi$$
+
+A space is \textbf{regular/T3} or regular T1 if only if it any point and a closed subset (not containing that point) are separated by neighbourhoods, i.e.
+$$F \subseteq X \text{ st } F^c \in \tau, \exists \, G,H \in \tau \text{ st } G \cap H = \phi, x \in G, \text{ and } F \subseteq H$$
+
+A space is \textbf{normal/T4} or normal T1 if and only if all disjoint closed sets are separated by neighbourhoods, i.e.
+$$F_1, F_2 \subseteq X \text{ st } F_1^c, F_2^c \in \tau, \exists \, G_1,G_2 \in \tau \text{ st } G_1 \cap G_2 = \phi, F_1 \subseteq G_1 \text{ and } F_2 \subseteq G_2$$
+
+\textbf{Theorem:} A closed continuous image of normal space is normal.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $X$ be a normal space and $f: X \rightarrow Y$ a closed continuous function. \\
+	Let $F,G \subseteq Y$ be disjoint closed subsets \\
+	$\Rightarrow f^{-1}(F), f^{-1}(G)$ are closed in $X$ by continuity of $f$ \\
+	$f^{-1}(F) \cap f^{-1}(G) = f^{-1}(F \cap G) = f^{-1}(\phi) = \phi$ \\
+	$\because X$ is T4 $\therefore \exists U,V \in \tau_X$ st $f^{-1}(G) \subseteq U$ and $f^{-1}(H) \subseteq V$ \\
+	$\Rightarrow U^c, V^c$ are closed in $X$ \\
+	$\because f$ is closed continuous $\therefore f(U^c), f(V^c)$ are closed in $Y$ \\
+	$\Rightarrow (f(U^c))^c = U, (f(V^c))^c=V \in \tau_Y$ \\
+	$\because f(U) \cap f(V) = f(U \cap V) = f(\phi) = \phi$ and $F \subseteq f(U), G \subseteq f(V) \therefore f(X)$ is a normal space.
+\end{tcolorbox}
+
+A compact subset of a T2 space is T3.
+
+\textbf{Theorem:} Every compact Hausdorff space is normal.
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $X$ be a compact T2 space and $F_1, F_2 \subseteq X$ be disjoint closed subsets \\
+	$\because$ a closed subset of a compact space is compact $\therefore F_1, F_2$ are compact \\
+	$\because$ a compact subset of a T2 is T3 $\therefore \forall x \in F_2, \exists$ disjoint open sets $G_x, H_x$ st $x \in G_x$ and $F_1 \subseteq H_x$ \\
+	$\because F_2$ is compact $\therefore$ it is covered by a finite covering, say $F_2 \subseteq  G = \cup \{G_x : x \in F_2\}$ \\
+	$\because G_x \in \tau \therefore G \in \tau$ \\
+	Let $H = \cap \{H_x: x \in F_2\}$ \\
+	$\because H_x \cap G_x = \phi, \; \forall x \in F_2 \therefore H \cap G = \phi$ \\
+	Similarly $\forall$ disjoint closed sets $\in X, \exists$ disjoint open sets containing them \\
+	Hence $X$ is T4
+\end{tcolorbox}
+
+\subsection{Relationship Between Spaces}
+
+Every T2 satisfies T1
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $X$ be T2 and $x,y \in X$ st $x \not= y$ \\
+	$\Rightarrow \exists \, G_x,G_y \in X$ st $x \in G_x$, $y \in G_y$ and $G_x \cap G_y = \phi$ \\
+	$\Rightarrow x \in G_x, x \not\in G_y$ and $y \in G_y, y \not\in G_x$ \\
+	Hence T2 is T1
+\end{tcolorbox}
+
+Every T3 satisfies T2
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $X$ be T3 and $x,y \in X$ st $x \not= y$ \\
+	$\Rightarrow \exists \, G,H \in \tau$ st $G \cap H = \phi$ and $x \in G$ and $\{y\} \subseteq H$ where $\{y\}$ is closed $\because$ T3 is T1 \\
+	$\Rightarrow x \in G$ and $y \in H$ where $G \cap H = \phi$ \\
+	Hence T3 is T2
+\end{tcolorbox}
+
+Every T4 satisfies T3
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $X$ be T4 and let $F$ be ca closed subset st $x \not\in F$ \\
+	$\because$ T4 is T1 $\therefore \{x\}$ is closed \\
+	$\Rightarrow \{x\} \cap F = \phi$ \\
+	$\exists \, G,H \in \tau$ which are disjoint and contain $\{x\}, F$ respectively \\
+	$\Rightarrow x \in G$ and $F \subseteq H$ where $G,H$ are disjoint and $F$ is closed \\
+	Hence T4 is T3
+\end{tcolorbox}
+
+\subsection{Metric Spaces}
+
+All metric spaces satisfy all separation axioms.
+
+Accessible (T1) Space
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $(X,d)$ be a metric space, then $\because$ all singletons in $(X,d)$ are closed $\therefore (X,d)$ is T1
+\end{tcolorbox}
+
+Hausdorff (T2) Space
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Let $(X,d)$ be a metric space and $x,y \in X$ st $x \not= y$ \\
+	$\because x \not= y \therefore d(x,y) = r > 0$ \\
+	Let $x \in N_{r/3}(x)$ and $y \in N_{r/3}(y)$ \\
+	Now we only need to show that $N_{r/3}(x) \cap N_{r/3}(y) =\phi$ \\
+	Suppose $N_{r/3}(x) \cap N_{r/3}(y) \not= \phi$ \\
+	Let $z \in N_{r/3}(x) \cap N_{r/3}(y)$, then $z \in N_{r/3}(x)$ and $z \in N_{r/3}(y)$ \\
+	$\Rightarrow d(x,y) < \frac{r}{3}$ and $d(y,z) < \frac{r}{3}$ \\
+	$\because r = d(x,y) \leq d(x,z) + d(z,y) \therefore d(x,y) < \frac{r}{3} + \frac{r}{3}$ \\
+	$\Rightarrow r < \frac{2}{3}r$ \\
+	$\because r > 0 \therefore r \not< \frac{2}{3}r$ which is a contradiction \\
+	$\Rightarrow N_{r/3}(x) \cap N_{r/3}(y) =\phi$ \\
+	Hence $(X,d)$ is T2
+\end{tcolorbox}
+
+Regular (T3) Space
+\begin{tcolorbox}[colback=lightgray!10,colframe=lightgray!10, fontupper=\linespread{1.5}\selectfont]
+	Suppose $(X,d)$ is a metric space, $F$ is a closed subset and $x \not\in F$ \\
+	$\Rightarrow x \in F^c$ \\
+	$\Rightarrow \exists \, N_r(x) \subseteq F^c$ \\
+	$\Rightarrow N_{r/2}(x) \subseteq \bar{N_{r/2}(x)} \subseteq N_r(x)$ \\
+	$\Rightarrow N_{r/2}(x) \cap (N_r(x))^c = \phi$ st $x \in N_{r/2}$ and $F \subseteq (N_r(x))^c$ \\
+	Hence $(X,d)$ is T3
+\end{tcolorbox}
+
+\end{document}
